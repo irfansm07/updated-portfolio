@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 /* ─── Skill Data ──────────────────────────────────────────────────────────── */
 
@@ -26,27 +26,58 @@ const skillCategories = [
   },
 ];
 
+/* ─── Brand Colors Mapping ────────────────────────────────────────────────── */
+
+const brandColors: Record<string, { border: string; bg: string; text: string; glow: string }> = {
+  HTML5: { border: 'rgba(227, 79, 38, 0.2)', bg: 'rgba(227, 79, 38, 0.04)', text: '#e34f26', glow: 'rgba(227, 79, 38, 0.15)' },
+  CSS3: { border: 'rgba(21, 114, 182, 0.2)', bg: 'rgba(21, 114, 182, 0.04)', text: '#38bdf8', glow: 'rgba(21, 114, 182, 0.15)' },
+  JavaScript: { border: 'rgba(247, 223, 30, 0.15)', bg: 'rgba(247, 223, 30, 0.03)', text: '#facc15', glow: 'rgba(247, 223, 30, 0.1)' },
+  'React.js': { border: 'rgba(97, 218, 251, 0.2)', bg: 'rgba(97, 218, 251, 0.04)', text: '#61dafb', glow: 'rgba(97, 218, 251, 0.15)' },
+  'Responsive Design': { border: 'rgba(129, 140, 248, 0.2)', bg: 'rgba(129, 140, 248, 0.04)', text: '#818cf8', glow: 'rgba(129, 140, 248, 0.15)' },
+  'DOM Manipulation': { border: 'rgba(167, 139, 250, 0.2)', bg: 'rgba(167, 139, 250, 0.04)', text: '#a78bfa', glow: 'rgba(167, 139, 250, 0.15)' },
+  Vite: { border: 'rgba(189, 52, 254, 0.2)', bg: 'rgba(189, 52, 254, 0.04)', text: '#bd34fe', glow: 'rgba(189, 52, 254, 0.15)' },
+  'Node.js': { border: 'rgba(51, 153, 51, 0.2)', bg: 'rgba(51, 153, 51, 0.04)', text: '#4ade80', glow: 'rgba(51, 153, 51, 0.15)' },
+  Supabase: { border: 'rgba(62, 207, 142, 0.2)', bg: 'rgba(62, 207, 142, 0.04)', text: '#3ecf8e', glow: 'rgba(62, 207, 142, 0.15)' },
+  Git: { border: 'rgba(240, 80, 50, 0.2)', bg: 'rgba(240, 80, 50, 0.04)', text: '#f05032', glow: 'rgba(240, 80, 50, 0.15)' },
+  GitHub: { border: 'rgba(230, 237, 243, 0.2)', bg: 'rgba(230, 237, 243, 0.04)', text: '#cbd5e1', glow: 'rgba(230, 237, 243, 0.12)' },
+  Brevo: { border: 'rgba(11, 153, 110, 0.2)', bg: 'rgba(11, 153, 110, 0.04)', text: '#0b996e', glow: 'rgba(11, 153, 110, 0.15)' },
+  'REST APIs': { border: 'rgba(34, 211, 238, 0.2)', bg: 'rgba(34, 211, 238, 0.04)', text: '#22d3ee', glow: 'rgba(34, 211, 238, 0.15)' },
+  'Python (OOP)': { border: 'rgba(48, 105, 152, 0.2)', bg: 'rgba(48, 105, 152, 0.04)', text: '#38bdf8', glow: 'rgba(48, 105, 152, 0.15)' },
+  'File Handling': { border: 'rgba(251, 146, 60, 0.2)', bg: 'rgba(251, 146, 60, 0.04)', text: '#fb923c', glow: 'rgba(251, 146, 60, 0.15)' },
+  'C++ Basics': { border: 'rgba(0, 89, 156, 0.2)', bg: 'rgba(0, 89, 156, 0.04)', text: '#60a5fa', glow: 'rgba(0, 89, 156, 0.15)' },
+  TypeScript: { border: 'rgba(49, 120, 198, 0.2)', bg: 'rgba(49, 120, 198, 0.04)', text: '#3178c6', glow: 'rgba(49, 120, 198, 0.15)' },
+  Debugging: { border: 'rgba(248, 113, 113, 0.2)', bg: 'rgba(248, 113, 113, 0.04)', text: '#f87171', glow: 'rgba(248, 113, 113, 0.15)' },
+  'UI/UX Awareness': { border: 'rgba(192, 132, 252, 0.2)', bg: 'rgba(192, 132, 252, 0.04)', text: '#c084fc', glow: 'rgba(192, 132, 252, 0.15)' },
+  'Clean Code': { border: 'rgba(74, 222, 128, 0.2)', bg: 'rgba(74, 222, 128, 0.04)', text: '#4ade80', glow: 'rgba(74, 222, 128, 0.15)' },
+  'Time Management': { border: 'rgba(96, 165, 250, 0.2)', bg: 'rgba(96, 165, 250, 0.04)', text: '#60a5fa', glow: 'rgba(96, 165, 250, 0.15)' },
+  'Problem-Solving': { border: 'rgba(250, 204, 21, 0.2)', bg: 'rgba(250, 204, 21, 0.04)', text: '#facc15', glow: 'rgba(250, 204, 21, 0.15)' },
+  'Team Collaboration': { border: 'rgba(56, 189, 248, 0.2)', bg: 'rgba(56, 189, 248, 0.04)', text: '#38bdf8', glow: 'rgba(56, 189, 248, 0.15)' },
+  Adaptability: { border: 'rgba(251, 113, 133, 0.2)', bg: 'rgba(251, 113, 133, 0.04)', text: '#fb7185', glow: 'rgba(251, 113, 133, 0.15)' },
+};
+
+const defaultColor = { border: 'rgba(148, 163, 184, 0.15)', bg: 'rgba(148, 163, 184, 0.03)', text: '#cbd5e1', glow: 'rgba(148, 163, 184, 0.08)' };
+
 /* ─── Card Icons ──────────────────────────────────────────────────────────── */
 
 const cardIcons: Record<string, React.ReactNode> = {
   Frontend: (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
     </svg>
   ),
   'Backend & Tools': (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/>
       <line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/>
     </svg>
   ),
   Programming: (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
     </svg>
   ),
   'Core Strengths': (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
     </svg>
   ),
@@ -55,7 +86,7 @@ const cardIcons: Record<string, React.ReactNode> = {
 /* ─── Tech Pill Icons ─────────────────────────────────────────────────────── */
 
 function TechIcon({ name }: { name: string }) {
-  const s = { width: 16, height: 16, flexShrink: 0 } as const;
+  const s = { width: 14, height: 14, flexShrink: 0 } as const;
   switch (name) {
     case 'HTML5':
       return <svg {...s} viewBox="0 0 24 24" fill="#E34F26"><path d="M1.5 0h21l-1.91 21.563L12 24l-8.59-2.437L1.5 0zm7.09 9.12l-.38-4.25h7.38l.12 1.35H10.7l.25 2.9h5.6l-.5 5.34L12 15.63l-4.03-1.17-.28-3.09h2.65l.14 1.58 1.52.41 1.52-.41.16-1.72H8.59z"/></svg>;
@@ -112,7 +143,7 @@ function TechIcon({ name }: { name: string }) {
 
 /* ─── useInView Hook ─────────────────────────────────────────────────────── */
 
-function useInView(threshold = 0.15) {
+function useInView(threshold = 0.1) {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
 
@@ -130,92 +161,58 @@ function useInView(threshold = 0.15) {
   return { ref, inView };
 }
 
-/* ─── Animated Card ──────────────────────────────────────────────────────── */
+/* ─── Animated Bento Card ────────────────────────────────────────────────── */
 
-function AnimatedCard({
+function BentoCard({
   category,
-  position,
+  gridClass,
   delay,
 }: {
   category: typeof skillCategories[0];
-  position: 'tl' | 'tr' | 'bl' | 'br';
+  gridClass: string;
   delay: number;
 }) {
-  const { ref, inView } = useInView(0.12);
-  const [hoveredPill, setHoveredPill] = useState<string | null>(null);
-
-  const slideDirection = {
-    tl: { x: -60, y: -40 },
-    tr: { x: 60, y: -40 },
-    bl: { x: -60, y: 40 },
-    br: { x: 60, y: 40 },
-  }[position];
+  const { ref, inView } = useInView(0.1);
 
   return (
     <div
       ref={ref}
-      className={`sk-card sk-card-${position}`}
+      className={`bento-card ${gridClass}`}
       style={{
         opacity: inView ? 1 : 0,
-        transform: inView
-          ? 'translate(0, 0) scale(1)'
-          : `translate(${slideDirection.x}px, ${slideDirection.y}px) scale(0.92)`,
-        transition: `opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${delay}s, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${delay}s`,
+        transform: inView ? 'translateY(0) scale(1)' : 'translateY(24px) scale(0.97)',
+        transition: `opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1) ${delay}s, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) ${delay}s`,
       }}
     >
-      <div className="sk-card-header">
-        <div
-          className="sk-card-icon"
-          style={{
-            opacity: inView ? 1 : 0,
-            transform: inView ? 'scale(1) rotate(0deg)' : 'scale(0) rotate(-180deg)',
-            transition: `all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) ${delay + 0.3}s`,
-          }}
-        >
-          {cardIcons[category.title]}
-        </div>
+      <div className="bento-card-header">
+        <div className="bento-card-icon">{cardIcons[category.title]}</div>
         <div>
-          <h3
-            className="sk-card-title"
-            style={{
-              opacity: inView ? 1 : 0,
-              transform: inView ? 'translateX(0)' : 'translateX(-20px)',
-              transition: `all 0.5s ease ${delay + 0.35}s`,
-            }}
-          >
-            {category.title}
-          </h3>
-          <p
-            className="sk-card-desc"
-            style={{
-              opacity: inView ? 1 : 0,
-              transform: inView ? 'translateX(0)' : 'translateX(-20px)',
-              transition: `all 0.5s ease ${delay + 0.45}s`,
-            }}
-          >
-            {category.description}
-          </p>
+          <h3 className="bento-card-title">{category.title}</h3>
+          <p className="bento-card-desc">{category.description}</p>
         </div>
       </div>
-      <div className="sk-pills">
-        {category.skills.map((skill, i) => (
-          <span
-            key={skill}
-            className={`sk-pill ${hoveredPill === skill ? 'sk-pill-hovered' : ''}`}
-            onMouseEnter={() => setHoveredPill(skill)}
-            onMouseLeave={() => setHoveredPill(null)}
-            style={{
-              opacity: inView ? 1 : 0,
-              transform: inView
-                ? 'translateY(0) scale(1)'
-                : 'translateY(20px) scale(0.8)',
-              transition: `opacity 0.5s ease ${delay + 0.5 + i * 0.07}s, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) ${delay + 0.5 + i * 0.07}s, background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease`,
-            }}
-          >
-            <TechIcon name={skill} />
-            <span>{skill}</span>
-          </span>
-        ))}
+      <div className="bento-pills">
+        {category.skills.map((skill, i) => {
+          const col = brandColors[skill] || defaultColor;
+          return (
+            <span
+              key={skill}
+              className="bento-pill"
+              style={{
+                '--pill-text': col.text,
+                '--pill-bg': col.bg,
+                '--pill-border': col.border,
+                '--pill-glow': col.glow,
+                opacity: inView ? 1 : 0,
+                transform: inView ? 'translateY(0)' : 'translateY(12px)',
+                transition: `opacity 0.4s ease ${delay + 0.3 + i * 0.05}s, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) ${delay + 0.3 + i * 0.05}s`,
+              } as React.CSSProperties}
+            >
+              <TechIcon name={skill} />
+              <span>{skill}</span>
+            </span>
+          );
+        })}
       </div>
     </div>
   );
@@ -225,80 +222,22 @@ function AnimatedCard({
 
 export function Skills() {
   const sectionRef = useRef<HTMLElement>(null);
-  const [isGlowing, setIsGlowing] = useState(false);
   const { ref: headerRef, inView: headerInView } = useInView(0.2);
-  const { ref: centerRef, inView: centerInView } = useInView(0.3);
   const { ref: footerRef, inView: footerInView } = useInView(0.2);
-
-  /* Particle system for center diamond */
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    canvas.width = 260;
-    canvas.height = 260;
-
-    type Particle = { x: number; y: number; vx: number; vy: number; life: number; maxLife: number; size: number };
-    const particles: Particle[] = [];
-    let animId: number;
-
-    function spawn() {
-      const angle = Math.random() * Math.PI * 2;
-      const dist = 30 + Math.random() * 20;
-      particles.push({
-        x: 130 + Math.cos(angle) * dist,
-        y: 130 + Math.sin(angle) * dist,
-        vx: Math.cos(angle) * (0.3 + Math.random() * 0.5),
-        vy: Math.sin(angle) * (0.3 + Math.random() * 0.5),
-        life: 0,
-        maxLife: 60 + Math.random() * 40,
-        size: 1 + Math.random() * 2,
-      });
-    }
-
-    function tick() {
-      if (!ctx || !canvas) return;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      if (Math.random() < 0.3) spawn();
-
-      for (let i = particles.length - 1; i >= 0; i--) {
-        const p = particles[i];
-        p.x += p.vx;
-        p.y += p.vy;
-        p.life++;
-        if (p.life >= p.maxLife) { particles.splice(i, 1); continue; }
-        const alpha = 1 - p.life / p.maxLife;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(167, 139, 250, ${alpha * 0.6})`;
-        ctx.fill();
-      }
-      animId = requestAnimationFrame(tick);
-    }
-
-    tick();
-    return () => cancelAnimationFrame(animId);
-  }, []);
-
-  const toggleGlow = useCallback(() => setIsGlowing(prev => !prev), []);
 
   return (
     <section id="skills" ref={sectionRef} className="sk">
       <div className="sk-divider" />
 
-      {/* Badge + Heading — animated */}
-      <div ref={headerRef}>
+      {/* Header */}
+      <div ref={headerRef} className="sk-header">
         <div className="sk-badge-row">
           <span
             className="sk-badge"
             style={{
               opacity: headerInView ? 1 : 0,
-              transform: headerInView ? 'translateY(0) scale(1)' : 'translateY(-20px) scale(0.9)',
-              transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0s',
+              transform: headerInView ? 'translateY(0)' : 'translateY(-12px)',
+              transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
             }}
           >
             MY TECHNICAL ARSENAL
@@ -309,8 +248,8 @@ export function Skills() {
           className="sk-heading"
           style={{
             opacity: headerInView ? 1 : 0,
-            transform: headerInView ? 'translateY(0)' : 'translateY(30px)',
-            transition: 'all 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.15s',
+            transform: headerInView ? 'translateY(0)' : 'translateY(20px)',
+            transition: 'all 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s',
           }}
         >
           Technical <span className="sk-heading-glow">Arsenal</span>
@@ -319,8 +258,8 @@ export function Skills() {
           className="sk-subtitle"
           style={{
             opacity: headerInView ? 1 : 0,
-            transform: headerInView ? 'translateY(0)' : 'translateY(20px)',
-            transition: 'all 0.6s ease 0.35s',
+            transform: headerInView ? 'translateY(0)' : 'translateY(16px)',
+            transition: 'all 0.6s ease 0.25s',
           }}
         >
           A powerful combination of modern technologies and core competencies<br />
@@ -328,55 +267,15 @@ export function Skills() {
         </p>
       </div>
 
-      {/* Grid + Center Diamond */}
-      <div className={`sk-grid-wrap ${isGlowing ? 'sk-active' : ''}`}>
-        {/* Card 1 — Top Left */}
-        <AnimatedCard category={skillCategories[0]} position="tl" delay={0} />
+      {/* Bento Grid */}
+      <div className="bento-grid">
+        {/* Row 1: Frontend (span 2) & Backend (span 1) */}
+        <BentoCard category={skillCategories[0]} gridClass="span-2" delay={0} />
+        <BentoCard category={skillCategories[1]} gridClass="span-1" delay={0.15} />
 
-        {/* Card 2 — Top Right */}
-        <AnimatedCard category={skillCategories[1]} position="tr" delay={0.15} />
-
-        {/* Center Diamond */}
-        <div
-          className="sk-center"
-          ref={centerRef}
-          style={{
-            opacity: centerInView ? 1 : 0,
-            transition: 'opacity 1s ease 0.3s',
-          }}
-        >
-          <canvas
-            ref={canvasRef}
-            className="sk-particles"
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: 260,
-              height: 260,
-              pointerEvents: 'none',
-              zIndex: 4,
-            }}
-          />
-          <div className="sk-glow-ring" />
-          <div className="sk-glow-ring sk-glow-ring-2" />
-          <div className="sk-glow-ring sk-glow-ring-3" />
-          <button
-            className={`sk-diamond ${isGlowing ? 'sk-diamond-active' : ''}`}
-            onClick={toggleGlow}
-            aria-label="Toggle glow effect"
-          >
-            <span className="sk-diamond-text">&lt;/&gt;</span>
-          </button>
-          <div className="sk-platform" />
-        </div>
-
-        {/* Card 3 — Bottom Left */}
-        <AnimatedCard category={skillCategories[2]} position="bl" delay={0.3} />
-
-        {/* Card 4 — Bottom Right */}
-        <AnimatedCard category={skillCategories[3]} position="br" delay={0.45} />
+        {/* Row 2: Programming (span 1) & Core Strengths (span 2) */}
+        <BentoCard category={skillCategories[2]} gridClass="span-1" delay={0.3} />
+        <BentoCard category={skillCategories[3]} gridClass="span-2" delay={0.45} />
       </div>
 
       {/* Footer CTA */}
@@ -385,19 +284,12 @@ export function Skills() {
         className="sk-footer"
         style={{
           opacity: footerInView ? 1 : 0,
-          transform: footerInView ? 'translateY(0)' : 'translateY(30px)',
-          transition: 'all 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.2s',
+          transform: footerInView ? 'translateY(0)' : 'translateY(24px)',
+          transition: 'all 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.15s',
         }}
       >
         <div className="sk-footer-left">
-          <div
-            className="sk-footer-icon"
-            style={{
-              opacity: footerInView ? 1 : 0,
-              transform: footerInView ? 'scale(1) rotate(0deg)' : 'scale(0) rotate(-90deg)',
-              transition: 'all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.5s',
-            }}
-          >
+          <div className="sk-footer-icon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 00-2.91-.09z"/>
               <path d="M12 15l-3-3a22 22 0 012-3.95A12.88 12.88 0 0122 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 01-4 2z"/>
@@ -421,7 +313,7 @@ export function Skills() {
       </div>
 
       <style jsx global>{`
-        /* ── Section ── */
+        /* ── Section Wrapper ── */
         .sk {
           position: relative;
           max-width: 1100px;
@@ -435,391 +327,258 @@ export function Skills() {
           margin-bottom: 56px;
         }
 
+        .sk-header {
+          text-align: center;
+          margin-bottom: 56px;
+        }
+
         /* ── Badge ── */
-        .sk-badge-row { text-align: center; margin-bottom: 20px; }
+        .sk-badge-row { margin-bottom: 20px; }
         .sk-badge {
           display: inline-block;
-          padding: 8px 20px;
+          padding: 6px 16px;
           border-radius: 999px;
-          border: 1px solid rgba(124,92,255,0.2);
-          background: rgba(124,92,255,0.06);
+          border: 1px solid rgba(124,92,255,0.15);
+          background: rgba(124,92,255,0.04);
           font-family: var(--font-mono);
           font-size: 0.65rem;
-          letter-spacing: 0.25em;
-          color: rgba(167,139,250,0.8);
+          letter-spacing: 0.2em;
+          color: rgba(167,139,250,0.75);
         }
 
         /* ── Heading ── */
         .sk-heading {
-          text-align: center;
           font-family: var(--font-heading);
-          font-size: clamp(3rem, 6vw, 4.5rem);
+          font-size: clamp(2.5rem, 5vw, 3.8rem);
           font-weight: 700;
           color: #F8FAFC;
-          letter-spacing: -0.03em;
-          line-height: 1.1;
+          letter-spacing: -0.02em;
+          line-height: 1.15;
           margin-bottom: 16px;
         }
         .sk-heading-glow {
-          background: linear-gradient(135deg, #C4B5FD, #7C5CFF);
+          background: linear-gradient(135deg, #a5b4fc, #6366f1);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
-          animation: sk-text-shimmer 3s ease-in-out infinite;
-          background-size: 200% auto;
-        }
-        @keyframes sk-text-shimmer {
-          0%, 100% { background-position: 0% center; }
-          50% { background-position: 100% center; }
         }
         .sk-subtitle {
-          text-align: center;
           max-width: 580px;
-          margin: 0 auto 56px;
+          margin: 0 auto;
           font-size: 0.95rem;
           color: #94A3B8;
           line-height: 1.7;
         }
 
-        /* ── Grid Wrapper ── */
-        .sk-grid-wrap {
+        /* ── Bento Grid ── */
+        .bento-grid {
           display: grid;
-          grid-template-columns: 1fr 1fr;
-          grid-template-rows: auto auto;
-          gap: 80px;
-          position: relative;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 20px;
           margin-bottom: 48px;
         }
 
-        /* ── Cards ── */
-        .sk-card {
-          background: rgba(11,16,34,0.8);
-          border: 1px solid rgba(255,255,255,0.06);
+        /* Bento Cards */
+        .bento-card {
+          background: rgba(10, 10, 25, 0.4);
+          border: 1px solid rgba(255, 255, 255, 0.04);
+          border-radius: 16px;
           padding: 32px;
           display: flex;
           flex-direction: column;
-          gap: 20px;
-          backdrop-filter: blur(12px);
-          transition: border-color 0.4s, box-shadow 0.4s, transform 0.4s;
+          gap: 24px;
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                      border-color 0.4s ease,
+                      box-shadow 0.4s ease;
           position: relative;
-          z-index: 2;
-          will-change: transform, opacity;
-        }
-        .sk-card::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          border-radius: inherit;
-          background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(124,92,255,0.06), transparent 40%);
-          opacity: 0;
-          transition: opacity 0.4s;
-          pointer-events: none;
-          z-index: -1;
-        }
-        .sk-card:hover::before { opacity: 1; }
-        .sk-card:hover {
-          transform: translateY(-6px) !important;
-          border-color: rgba(124,92,255,0.35);
-          box-shadow:
-            0 8px 40px rgba(124,92,255,0.12),
-            0 0 0 1px rgba(124,92,255,0.15),
-            0 0 80px rgba(124,92,255,0.05);
+          z-index: 1;
         }
 
-        /* Glow state */
-        .sk-active .sk-card {
-          border-color: rgba(124,92,255,0.25);
-          box-shadow: 0 0 40px rgba(124,92,255,0.08);
-          animation: sk-card-pulse 3s ease-in-out infinite alternate;
+        .bento-card.span-2 {
+          grid-column: span 2;
         }
-        @keyframes sk-card-pulse {
-          0%   { box-shadow: 0 0 20px rgba(124,92,255,0.06); }
-          100% { box-shadow: 0 0 50px rgba(124,92,255,0.18); border-color: rgba(167,139,250,0.4); }
+        .bento-card.span-1 {
+          grid-column: span 1;
         }
 
-        /* Curved inner corners — matching the mockup */
-        .sk-card-tl { border-radius: 20px 20px 100px 20px; }
-        .sk-card-tr { border-radius: 20px 20px 20px 100px; }
-        .sk-card-bl { border-radius: 20px 100px 20px 20px; }
-        .sk-card-br { border-radius: 100px 20px 20px 20px; }
+        .bento-card:hover {
+          transform: translateY(-4px);
+          border-color: rgba(99, 102, 241, 0.25);
+          box-shadow: 0 10px 30px rgba(99, 102, 241, 0.04),
+                      0 0 1px rgba(99, 102, 241, 0.15),
+                      inset 0 0 12px rgba(99, 102, 241, 0.02);
+        }
 
-        /* ── Card Inner ── */
-        .sk-card-header {
+        /* Bento Card Header */
+        .bento-card-header {
           display: flex;
           gap: 16px;
           align-items: flex-start;
         }
-        .sk-card-icon {
-          width: 44px; height: 44px;
-          border-radius: 12px;
-          background: rgba(124,92,255,0.08);
-          border: 1px solid rgba(124,92,255,0.15);
+
+        .bento-card-icon {
+          width: 40px;
+          height: 40px;
+          border-radius: 10px;
+          background: rgba(99, 102, 241, 0.06);
+          border: 1px solid rgba(99, 102, 241, 0.12);
           display: flex;
-          align-items: center; justify-content: center;
+          align-items: center;
+          justify-content: center;
+          color: #818cf8;
           flex-shrink: 0;
-          color: #A78BFA;
-          transition: background 0.3s, border-color 0.3s, transform 0.3s;
-          will-change: transform;
+          transition: background 0.3s, border-color 0.3s, color 0.3s;
         }
-        .sk-card:hover .sk-card-icon {
-          background: rgba(124,92,255,0.18);
-          border-color: rgba(124,92,255,0.4);
-          transform: scale(1.1) rotate(5deg);
+
+        .bento-card:hover .bento-card-icon {
+          background: rgba(99, 102, 241, 0.12);
+          border-color: rgba(99, 102, 241, 0.3);
+          color: #a5b4fc;
         }
-        .sk-card-title {
+
+        .bento-card-title {
           font-family: var(--font-heading);
-          font-size: 1.25rem;
+          font-size: 1.2rem;
           font-weight: 600;
           color: #F8FAFC;
           margin-bottom: 4px;
         }
-        .sk-card-desc {
-          font-size: 0.85rem;
-          color: #64748B;
-          line-height: 1.4;
+
+        .bento-card-desc {
+          font-size: 0.88rem;
+          color: #94A3B8;
+          line-height: 1.45;
         }
 
-        /* ── Pills ── */
-        .sk-pills { display: flex; flex-wrap: wrap; gap: 8px; }
-        .sk-pill {
+        /* Minimalist Tech Pills */
+        .bento-pills {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+          align-items: center;
+        }
+
+        .bento-pill {
           display: inline-flex;
           align-items: center;
           gap: 8px;
-          height: 38px;
-          padding: 0 14px;
-          border-radius: 10px;
-          background: rgba(255,255,255,0.03);
-          border: 1px solid rgba(255,255,255,0.07);
+          height: 34px;
+          padding: 0 12px;
+          border-radius: 8px;
+          background: var(--pill-bg);
+          border: 1px solid var(--pill-border);
           font-family: var(--font-body);
-          font-size: 0.8rem;
-          color: #CBD5E1;
+          font-size: 0.78rem;
+          font-weight: 500;
+          color: var(--pill-text);
           cursor: default;
           white-space: nowrap;
-          will-change: transform, opacity;
-          position: relative;
-          overflow: hidden;
-        }
-        .sk-pill::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(135deg, rgba(124,92,255,0.15), rgba(99,102,241,0.08));
-          opacity: 0;
-          transition: opacity 0.3s;
-          pointer-events: none;
-        }
-        .sk-pill-hovered::before { opacity: 1; }
-        .sk-pill-hovered {
-          transform: scale(1.08) translateY(-2px) !important;
-          border-color: rgba(124,92,255,0.3) !important;
-          box-shadow: 0 4px 20px rgba(124,92,255,0.15);
-          color: #F8FAFC;
+          transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                      border-color 0.25s,
+                      box-shadow 0.25s,
+                      background-color 0.25s;
         }
 
-        /* ── Center Diamond ── */
-        .sk-center {
-          position: absolute;
-          top: 50%; left: 50%;
-          transform: translate(-50%, -50%);
-          z-index: 5;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          pointer-events: none;
-        }
-        .sk-glow-ring {
-          position: absolute;
-          width: 160px; height: 160px;
-          border-radius: 50%;
-          border: 1px solid rgba(124,92,255,0.1);
-          top: 50%; left: 50%;
-          transform: translate(-50%, -50%);
-          animation: sk-ring-pulse 4s ease-in-out infinite;
-        }
-        .sk-glow-ring-2 {
-          width: 220px; height: 220px;
-          border-color: rgba(124,92,255,0.05);
-          animation-delay: 1s;
-        }
-        .sk-glow-ring-3 {
-          width: 280px; height: 280px;
-          border-color: rgba(124,92,255,0.03);
-          animation-delay: 2s;
-          animation-duration: 5s;
-        }
-        @keyframes sk-ring-pulse {
-          0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
-          50%       { transform: translate(-50%, -50%) scale(1.12); opacity: 1; }
-        }
-
-        .sk-diamond {
-          width: 80px; height: 80px;
-          background: linear-gradient(145deg, rgba(11,16,34,0.95), rgba(20,24,50,0.9));
-          border: 1.5px solid rgba(124,92,255,0.35);
-          border-radius: 18px;
-          transform: rotate(45deg);
-          display: flex;
-          align-items: center; justify-content: center;
-          cursor: pointer;
-          pointer-events: auto;
-          position: relative;
-          z-index: 10;
-          box-shadow:
-            0 0 30px rgba(124,92,255,0.2),
-            inset 0 0 20px rgba(124,92,255,0.08);
-          animation: sk-float 3s ease-in-out infinite;
-          transition: border-color 0.4s, box-shadow 0.4s, background 0.4s;
-        }
-        .sk-diamond:hover {
-          border-color: rgba(124,92,255,0.6);
-          box-shadow:
-            0 0 50px rgba(124,92,255,0.4),
-            inset 0 0 30px rgba(124,92,255,0.15);
-        }
-        .sk-diamond-active {
-          border-color: rgba(167,139,250,0.8) !important;
-          background: linear-gradient(145deg, rgba(124,92,255,0.15), rgba(20,24,50,0.9)) !important;
-          box-shadow:
-            0 0 60px rgba(124,92,255,0.5),
-            0 0 120px rgba(167,139,250,0.2),
-            inset 0 0 30px rgba(167,139,250,0.2) !important;
-          animation: sk-float 3s ease-in-out infinite, sk-diamond-glow 2s ease-in-out infinite alternate !important;
-        }
-        @keyframes sk-diamond-glow {
-          0%   { box-shadow: 0 0 40px rgba(124,92,255,0.4), inset 0 0 20px rgba(167,139,250,0.15); }
-          100% { box-shadow: 0 0 80px rgba(124,92,255,0.6), 0 0 140px rgba(167,139,250,0.25), inset 0 0 40px rgba(167,139,250,0.3); }
-        }
-        .sk-diamond-text {
-          transform: rotate(-45deg);
-          font-family: var(--font-heading);
-          font-size: 1.5rem;
-          font-weight: 700;
-          color: #fff;
-          text-shadow: 0 0 12px rgba(167,139,250,0.8);
-          user-select: none;
-        }
-        @keyframes sk-float {
-          0%, 100% { transform: rotate(45deg) translateY(0); }
-          50%       { transform: rotate(45deg) translateY(-10px); }
-        }
-
-        .sk-platform {
-          width: 100px; height: 24px;
-          border-radius: 50%;
-          background: radial-gradient(ellipse, rgba(124,92,255,0.3), transparent 70%);
-          margin-top: 12px;
-          animation: sk-platform-pulse 3s ease-in-out infinite;
-        }
-        @keyframes sk-platform-pulse {
-          0%, 100% { transform: scale(1); opacity: 0.6; }
-          50%       { transform: scale(1.15); opacity: 1; }
-        }
-
-        /* ── Particles canvas ── */
-        .sk-particles {
-          opacity: 0.7;
-          mix-blend-mode: screen;
+        .bento-pill:hover {
+          transform: scale(1.04) translateY(-1px);
+          border-color: var(--pill-text);
+          background-color: rgba(255, 255, 255, 0.02);
+          box-shadow: 0 2px 10px var(--pill-glow);
         }
 
         /* ── Footer ── */
         .sk-footer {
-          background: rgba(11,16,34,0.6);
-          border: 1px solid rgba(255,255,255,0.06);
-          border-radius: 20px;
-          padding: 28px 36px;
+          background: rgba(10, 10, 25, 0.3);
+          border: 1px solid rgba(255, 255, 255, 0.04);
+          border-radius: 16px;
+          padding: 24px 32px;
           display: flex;
           align-items: center;
           justify-content: space-between;
-          backdrop-filter: blur(12px);
-          transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
-          will-change: transform, opacity;
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          transition: border-color 0.3s;
         }
         .sk-footer:hover {
-          border-color: rgba(124,92,255,0.2);
-          box-shadow: 0 4px 30px rgba(124,92,255,0.06);
+          border-color: rgba(99, 102, 241, 0.15);
         }
         .sk-footer-left {
           display: flex; align-items: center; gap: 16px;
         }
         .sk-footer-icon {
-          width: 44px; height: 44px;
+          width: 40px; height: 40px;
           border-radius: 50%;
-          background: rgba(124,92,255,0.08);
-          border: 1px solid rgba(124,92,255,0.15);
+          background: rgba(99, 102, 241, 0.06);
+          border: 1px solid rgba(99, 102, 241, 0.12);
           display: flex; align-items: center; justify-content: center;
           flex-shrink: 0;
-          color: #A78BFA;
-          will-change: transform;
+          color: #818cf8;
         }
         .sk-footer-title {
           font-family: var(--font-heading);
-          font-size: 1rem;
+          font-size: 0.95rem;
           font-weight: 600;
-          color: #A78BFA;
+          color: #818cf8;
           margin-bottom: 2px;
         }
         .sk-footer-desc {
-          font-size: 0.82rem;
-          color: #64748B;
+          font-size: 0.8rem;
+          color: #94A3B8;
         }
         .sk-footer-right {
           display: flex; align-items: center; gap: 20px;
         }
         .sk-footer-cta {
           font-family: var(--font-heading);
-          font-size: 0.95rem;
+          font-size: 0.9rem;
           font-weight: 500;
           color: #F8FAFC;
           line-height: 1.4;
           text-align: right;
         }
         .sk-footer-btn {
-          width: 44px; height: 44px;
+          width: 40px; height: 40px;
           border-radius: 50%;
-          background: linear-gradient(135deg, #7C5CFF, #6D28D9);
+          background: linear-gradient(135deg, #6366f1, #4f46e5);
           display: flex; align-items: center; justify-content: center;
           text-decoration: none;
-          box-shadow: 0 0 20px rgba(124,92,255,0.3);
+          box-shadow: 0 0 15px rgba(99, 102, 241, 0.25);
           transition: transform 0.3s, box-shadow 0.3s;
           flex-shrink: 0;
-          animation: sk-btn-glow 2.5s ease-in-out infinite alternate;
-        }
-        @keyframes sk-btn-glow {
-          0%   { box-shadow: 0 0 20px rgba(124,92,255,0.3); }
-          100% { box-shadow: 0 0 35px rgba(124,92,255,0.5), 0 0 60px rgba(167,139,250,0.15); }
         }
         .sk-footer-btn:hover {
-          transform: scale(1.15) rotate(15deg);
-          box-shadow: 0 0 40px rgba(124,92,255,0.6);
+          transform: scale(1.1) rotate(15deg);
+          box-shadow: 0 0 25px rgba(99, 102, 241, 0.45);
         }
 
-        /* ── Responsive ── */
+        /* ── Responsive Grid ── */
         @media (max-width: 900px) {
-          .sk-grid-wrap { gap: 48px; }
-          .sk-card-tl, .sk-card-tr { border-radius: 20px 20px 60px 20px; }
-          .sk-card-tr { border-radius: 20px 20px 20px 60px; }
-          .sk-card-bl { border-radius: 20px 60px 20px 20px; }
-          .sk-card-br { border-radius: 60px 20px 20px 20px; }
-          .sk-diamond { width: 64px; height: 64px; }
-          .sk-diamond-text { font-size: 1.2rem; }
-          .sk-glow-ring { width: 120px; height: 120px; }
-          .sk-glow-ring-2 { width: 160px; height: 160px; }
-          .sk-glow-ring-3 { width: 200px; height: 200px; }
+          .bento-grid {
+            grid-template-columns: 1fr 1fr;
+          }
+          .bento-card.span-2 {
+            grid-column: span 2;
+          }
+          .bento-card.span-1 {
+            grid-column: span 1;
+          }
         }
+
         @media (max-width: 768px) {
           .sk { padding: 48px 16px 32px; }
-          .sk-grid-wrap {
+          .bento-grid {
             grid-template-columns: 1fr;
             gap: 16px;
           }
-          .sk-card-tl, .sk-card-tr, .sk-card-bl, .sk-card-br {
-            border-radius: 20px !important;
+          .bento-card.span-2,
+          .bento-card.span-1 {
+            grid-column: span 1;
           }
-          .sk-card { padding: 24px; }
-          .sk-center { display: none; }
-          .sk-heading { font-size: 2.5rem; }
+          .bento-card { padding: 24px; }
+          .sk-heading { font-size: 2.2rem; }
           .sk-subtitle { margin-bottom: 32px; }
-          .sk-divider { margin-bottom: 32px; }
           .sk-footer {
             flex-direction: column;
             align-items: flex-start;
