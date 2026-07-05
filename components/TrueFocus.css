@@ -1,0 +1,30 @@
+.truefocus-container {
+  position: relative;
+  display: inline-block;
+}
+
+.truefocus-sentence {
+  display: inline;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.truefocus-word {
+  display: inline;
+  margin: 0 4px;
+  cursor: pointer;
+  transition: filter 0.5s ease;
+}
+
+.truefocus-word.focused {
+  color: #ffffff;
+}
+
+.truefocus-bracket {
+  position: fixed;
+  border: 2px solid;
+  border-radius: 4px;
+  pointer-events: none;
+  z-index: 1000;
+}

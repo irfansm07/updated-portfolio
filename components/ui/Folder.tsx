@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import TrueFocus from '../TrueFocus';
+import '../TrueFocus.css';
 import './Folder.css';
 
 const darkenColor = (hex: string, percent: number) => {
