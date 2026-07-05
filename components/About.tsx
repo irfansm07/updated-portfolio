@@ -23,7 +23,7 @@ export function About() {
         <span className="glow-text">one experience at a time.</span>
       </h2>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem', alignItems: 'start' }}>
+      <div className="about-grid">
         {/* Bio */}
         <div>
           <p style={{ color: 'var(--text-muted)', lineHeight: '1.9', marginBottom: '1.5rem', fontSize: '1.05rem' }}>
@@ -36,7 +36,7 @@ export function About() {
             HTML, CSS, JavaScript, and Python with growing full-stack expertise. I thrive under pressure,
             ship fast, and obsess over clean code and intuitive UX.
           </p>
-          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+          <div className="about-buttons">
             <a
               href="mailto:smirfan9247@gmail.com"
               className="btn-primary"
@@ -68,13 +68,12 @@ export function About() {
           ].map((item) => (
             <div
               key={item.label}
-              className="glass-card"
-              style={{ padding: '0.85rem 1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+              className="glass-card fact-card"
             >
               <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', letterSpacing: '0.1em', color: 'var(--accent-2)', textTransform: 'uppercase' }}>
                 {item.label}
               </span>
-              <span style={{ color: 'var(--text-primary)', fontSize: '0.9rem', textAlign: 'right', maxWidth: '55%' }}>
+              <span className="fact-value">
                 {item.value}
               </span>
             </div>
@@ -92,9 +91,60 @@ export function About() {
           opacity: 1;
           transform: translateY(0);
         }
+        .about-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 3rem;
+          align-items: start;
+        }
+        .about-buttons {
+          display: flex;
+          gap: 1rem;
+          flex-wrap: wrap;
+        }
+        .fact-card {
+          padding: 0.85rem 1.25rem;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        .fact-value {
+          color: var(--text-primary);
+          font-size: 0.9rem;
+          text-align: right;
+          max-width: 55%;
+        }
         @media (max-width: 768px) {
-          div[style*="grid-template-columns"] {
-            grid-template-columns: 1fr !important;
+          .about-grid {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+          }
+          .about-buttons {
+            flex-direction: column;
+          }
+          .about-buttons :global(.btn-primary),
+          .about-buttons :global(.btn-outline) {
+            width: 100%;
+            text-align: center;
+          }
+          .fact-value {
+            max-width: 65%;
+          }
+        }
+        @media (max-width: 576px) {
+          .about-grid {
+            gap: 1.5rem;
+          }
+          .fact-card {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.35rem;
+            padding: 0.75rem 1rem;
+          }
+          .fact-value {
+            max-width: 100%;
+            text-align: left;
+            font-size: 0.85rem;
           }
         }
       `}</style>

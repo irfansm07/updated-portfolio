@@ -50,7 +50,7 @@ export function Education() {
       <div className="edu-timeline">
         {education.map((edu, idx) => (
           <div key={idx} className="edu-item timeline-item">
-            <div className="glass-card" style={{ padding: '1.75rem' }}>
+            <div className="glass-card edu-card">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.75rem' }}>
                 <div>
                   <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.1rem', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.35rem' }}>
@@ -82,7 +82,7 @@ export function Education() {
         <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.4rem', fontWeight: 600, marginBottom: '1.5rem', color: 'var(--text-primary)' }}>
           Key Highlights
         </h3>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
+        <div className="highlights-grid">
           {[
             '🚀 Developed and launched a full-stack production-ready platform (VibeXpert)',
             '⚡ Completed a 24-hour client project, demonstrating exceptional efficiency',
@@ -115,9 +115,33 @@ export function Education() {
           padding-left: 2.5rem;
           margin-bottom: 2rem;
         }
+        :global(.edu-card) {
+          padding: 1.75rem;
+        }
+        .highlights-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 1rem;
+        }
         @media (max-width: 768px) {
-          div[style*="grid-template-columns: repeat(2"] {
-            grid-template-columns: 1fr !important;
+          .highlights-grid {
+            grid-template-columns: 1fr;
+          }
+          .edu-item {
+            padding-left: 1.75rem;
+            margin-bottom: 1.5rem;
+          }
+          :global(.edu-card) {
+            padding: 1.25rem;
+          }
+        }
+        @media (max-width: 576px) {
+          .edu-item {
+            padding-left: 1.25rem;
+            margin-bottom: 1.25rem;
+          }
+          :global(.edu-card) {
+            padding: 1rem;
           }
         }
       `}</style>

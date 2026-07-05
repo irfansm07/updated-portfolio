@@ -13,6 +13,11 @@ export function Contact() {
   
   // Status state: 'idle' | 'loading' | 'success' | 'error'
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [errorMsg, setErrorMsg] = useState('');
+
+  // ─── Web3Forms Access Key ───
+  // Get yours free at https://web3forms.com (enter your email, receive the key)
+  const WEB3FORMS_KEY = '1aed6ce8-2a5d-4bca-9eb9-c9f00a742190';
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -31,28 +36,51 @@ export function Contact() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !email || !message) {
+      setErrorMsg('Please fill out all required fields.');
       setStatus('error');
       setTimeout(() => setStatus('idle'), 3000);
       return;
     }
 
     setStatus('loading');
-    
-    // Simulate API request (e.g. Formspree / Web3Forms)
-    setTimeout(() => {
-      setStatus('success');
-      // Reset form fields
-      setName('');
-      setEmail('');
-      setSubject('');
-      setMessage('');
-      
-      // Revert back to idle after showing success message
-      setTimeout(() => setStatus('idle'), 5000);
-    }, 1500);
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_KEY,
+          name,
+          email,
+          subject: subject || 'New Portfolio Contact',
+          message,
+          from_name: 'Portfolio Contact Form',
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        setStatus('success');
+        setName('');
+        setEmail('');
+        setSubject('');
+        setMessage('');
+        // Revert back to idle after showing success message
+        setTimeout(() => setStatus('idle'), 5000);
+      } else {
+        setErrorMsg(result.message || 'Something went wrong. Please try again.');
+        setStatus('error');
+        setTimeout(() => setStatus('idle'), 4000);
+      }
+    } catch {
+      setErrorMsg('Network error. Please check your connection and try again.');
+      setStatus('error');
+      setTimeout(() => setStatus('idle'), 4000);
+    }
   };
 
   const socialLinks = [
@@ -222,7 +250,7 @@ export function Contact() {
 
               {status === 'error' && (
                 <div className="error-banner">
-                  ⚠️ Please fill out all required fields.
+                  ⚠️ {errorMsg}
                 </div>
               )}
 
@@ -580,6 +608,76 @@ export function Contact() {
           
           .form-row-2 {
             grid-template-columns: 1fr;
+          }
+
+          .contact-intro {
+            font-size: 0.95rem;
+          }
+
+          .form-group input,
+          .form-group textarea {
+            min-height: 48px;
+            font-size: 1rem;
+          }
+
+          .submit-btn {
+            min-height: 48px;
+          }
+
+          .success-message {
+            padding: 2rem 0.75rem;
+          }
+        }
+
+        @media (max-width: 576px) {
+          .contact-form-card {
+            padding: 1.25rem;
+          }
+
+          .form-header-title {
+            font-size: 1.1rem;
+          }
+
+          .contact-intro {
+            font-size: 0.9rem;
+          }
+
+          .social-link-card {
+            padding: 0.9rem 1rem;
+          }
+
+          .contact-actions {
+            flex-direction: column;
+          }
+
+          .contact-actions .copy-email-btn,
+          .contact-actions .call-me-btn {
+            width: 100%;
+            justify-content: center;
+            text-align: center;
+          }
+
+          .footer-bar {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+          }
+
+          .footer-copyright,
+          .footer-tech {
+            font-size: 0.65rem;
+          }
+
+          .success-message {
+            padding: 1.5rem 0.5rem;
+          }
+
+          .success-title {
+            font-size: 1.25rem;
+          }
+
+          .success-desc {
+            font-size: 0.85rem;
           }
         }
       `}</style>

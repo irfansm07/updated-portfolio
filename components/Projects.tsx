@@ -245,6 +245,34 @@ export function Projects() {
           flex-shrink: 0;
           margin-top: 0.45rem;
         }
+
+        @media (max-width: 768px) {
+          .projects-grid { grid-template-columns: 1fr; }
+          .project-card {
+            padding: 1.5rem;
+          }
+          .project-name {
+            font-size: 1.35rem;
+          }
+        }
+
+        @media (max-width: 576px) {
+          .project-card {
+            padding: 1.25rem;
+          }
+          .project-name {
+            font-size: 1.2rem;
+          }
+          .project-desc {
+            font-size: 0.875rem;
+          }
+          .project-highlights li {
+            font-size: 0.8rem;
+          }
+          .project-card:hover {
+            transform: none;
+          }
+        }
       `}</style>
     </section>
   );

@@ -1,0 +1,61 @@
+.scroll-velocity-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 5rem 0;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  z-index: 10;
+  background: transparent;
+}
+
+.parallax {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+.scroller {
+  display: flex;
+  white-space: nowrap;
+  text-align: center;
+  font-family: var(--font-heading), 'Space Grotesk', sans-serif;
+  font-size: 2.25rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  filter: drop-shadow(0 4px 15px rgba(99, 102, 241, 0.15));
+}
+
+.scroller span {
+  flex-shrink: 0;
+  padding-right: 1.5rem;
+}
+
+/* Custom class for premium color schemes */
+.velocity-text-indigo {
+  background: linear-gradient(135deg, #a5b4fc 0%, #6366f1 50%, #c084fc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  padding-right: 1.5rem;
+}
+
+.velocity-text-purple {
+  background: linear-gradient(135deg, #c084fc 0%, #ec4899 50%, #a5b4fc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  padding-right: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .scroller {
+    font-size: 4.8rem;
+    line-height: 5.2rem;
+  }
+  .scroll-velocity-section {
+    padding: 7rem 0;
+  }
+}

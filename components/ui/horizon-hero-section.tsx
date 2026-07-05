@@ -3,7 +3,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
@@ -47,6 +46,35 @@ const splitTitleHTML = (text: string) =>
     return `<span class="title-char">${char}</span>`;
   }).join('');
 
+interface MountainMesh extends THREE.Mesh {
+  userData: {
+    baseZ: number;
+    index: number;
+    hidden: boolean;
+  };
+}
+
+interface ThreeRefsContainer {
+  scene: THREE.Scene;
+  camera: THREE.PerspectiveCamera;
+  renderer: THREE.WebGLRenderer;
+  composer: EffectComposer;
+  stars: THREE.Points[];
+  nebula: THREE.Mesh | null;
+  mountains: MountainMesh[];
+  animationId: number | null;
+  locations: number[];
+  targetCameraX: number | undefined;
+  targetCameraY: number | undefined;
+  targetCameraZ: number | undefined;
+  lastIndex: number;
+  atmosphere?: THREE.Mesh;
+  moon?: THREE.Mesh;
+  moonGlow?: THREE.Sprite;
+  moonGlowTexture?: THREE.CanvasTexture;
+  isFirstAnimationRun?: boolean;
+}
+
 export const Component = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -56,14 +84,11 @@ export const Component = () => {
   const menuRef = useRef<HTMLDivElement>(null);
 
   const smoothCameraPos = useRef({ x: 0, y: 30, z: 100 });
-  const cameraVelocity = useRef({ x: 0, y: 0, z: 0 });
 
   const [scrollProgress, setScrollProgress] = useState(0);
-  const [currentSection, setCurrentSection] = useState(0);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isReady, setIsReady] = useState(false);
   const [cyclingLabelIndex, setCyclingLabelIndex] = useState(0);
-  const [heroVisible, setHeroVisible] = useState(true);
   const totalSections = 3; // 4 snap steps: 0=hero(cycling), 1=FRONT-END DEV, 2=AI/ML, 3=FULL-STACK DEV
 
   // Wheel-snap state
@@ -74,11 +99,11 @@ export const Component = () => {
   const cyclingIndexRef = useRef(0);
   const cyclingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const threeRefs = useRef<any>({
-    scene: null,
-    camera: null,
-    renderer: null,
-    composer: null,
+  const threeRefs = useRef<ThreeRefsContainer>({
+    scene: null as unknown as THREE.Scene,
+    camera: null as unknown as THREE.PerspectiveCamera,
+    renderer: null as unknown as THREE.WebGLRenderer,
+    composer: null as unknown as EffectComposer,
     stars: [],
     nebula: null,
     mountains: [],
@@ -138,7 +163,7 @@ export const Component = () => {
       animate();
 
       setIsReady(true);
-      (window as any).__three = refs;
+      (window as unknown as { __three: unknown }).__three = refs;
     };
 
     const createStarField = () => {
@@ -304,7 +329,7 @@ export const Component = () => {
           side: THREE.DoubleSide,
         });
 
-        const mountain = new THREE.Mesh(geometry, material);
+        const mountain = new THREE.Mesh(geometry, material) as unknown as MountainMesh;
         mountain.position.z = layer.distance;
         mountain.position.y = layer.distance;
         mountain.userData = { baseZ: layer.distance, index, hidden: false };
@@ -394,15 +419,19 @@ export const Component = () => {
       refs.animationId = requestAnimationFrame(animate);
       const time = Date.now() * 0.001;
 
-      refs.stars.forEach((sf: any) => {
-        if (sf.material.uniforms) sf.material.uniforms.time.value = time;
+      refs.stars.forEach((sf) => {
+        const material = sf.material as THREE.ShaderMaterial;
+        if (material && material.uniforms) material.uniforms.time.value = time;
       });
 
-      if (refs.nebula?.material.uniforms) {
-        refs.nebula.material.uniforms.time.value = time * 0.5;
+      if (refs.nebula) {
+        const material = refs.nebula.material as THREE.ShaderMaterial;
+        if (material && material.uniforms) {
+          material.uniforms.time.value = time * 0.5;
+        }
       }
 
-      if (refs.camera && refs.targetCameraX !== undefined) {
+      if (refs.camera && refs.targetCameraX !== undefined && refs.targetCameraY !== undefined && refs.targetCameraZ !== undefined) {
         const sf = 0.05;
         smoothCameraPos.current.x += (refs.targetCameraX - smoothCameraPos.current.x) * sf;
         smoothCameraPos.current.y += (refs.targetCameraY - smoothCameraPos.current.y) * sf;
@@ -416,7 +445,7 @@ export const Component = () => {
         refs.camera.lookAt(0, 10, -600);
       }
 
-      refs.mountains.forEach((mountain: any, i: number) => {
+      refs.mountains.forEach((mountain, i) => {
         const pf = 1 + i * 0.5;
         mountain.position.x = Math.sin(time * 0.1) * 2 * pf;
         
@@ -446,11 +475,30 @@ export const Component = () => {
       const { current: refs } = threeRefs;
       if (refs.animationId) cancelAnimationFrame(refs.animationId);
       window.removeEventListener('resize', handleResize);
-      refs.stars.forEach((sf: any) => { sf.geometry.dispose(); sf.material.dispose(); });
-      refs.mountains.forEach((m: any) => { m.geometry.dispose(); m.material.dispose(); });
-      if (refs.nebula) { refs.nebula.geometry.dispose(); refs.nebula.material.dispose(); }
-      if (refs.moon) { refs.moon.geometry.dispose(); refs.moon.material.dispose(); }
-      if (refs.moonGlow) refs.moonGlow.material.dispose();
+      refs.stars.forEach((sf) => {
+        sf.geometry.dispose();
+        const material = sf.material as THREE.Material;
+        material.dispose();
+      });
+      refs.mountains.forEach((m) => {
+        m.geometry.dispose();
+        const material = m.material as THREE.Material;
+        material.dispose();
+      });
+      if (refs.nebula) {
+        refs.nebula.geometry.dispose();
+        const material = refs.nebula.material as THREE.Material;
+        material.dispose();
+      }
+      if (refs.moon) {
+        refs.moon.geometry.dispose();
+        const material = refs.moon.material as THREE.Material;
+        material.dispose();
+      }
+      if (refs.moonGlow) {
+        const material = refs.moonGlow.material as THREE.Material;
+        material.dispose();
+      }
       if (refs.moonGlowTexture) refs.moonGlowTexture.dispose();
       if (refs.renderer) refs.renderer.dispose();
     };
@@ -458,7 +506,7 @@ export const Component = () => {
 
   const getLocation = () => {
     const { current: refs } = threeRefs;
-    refs.mountains.forEach((mountain: any, i: number) => {
+    refs.mountains.forEach((mountain, i) => {
       refs.locations[i] = mountain.position.z;
     });
   };
@@ -604,7 +652,7 @@ export const Component = () => {
 
     const applyMountains = (index: number) => {
       const { current: refs } = threeRefs;
-      refs.mountains.forEach((mountain: any) => {
+      refs.mountains.forEach((mountain) => {
         mountain.userData.hidden = index >= 2;
       });
       if (refs.nebula) {
@@ -669,6 +717,49 @@ export const Component = () => {
       }, 250);
     };
 
+    let touchStartY = 0;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      if (heroExited.current) return;
+      touchStartY = e.touches[0].clientY;
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (heroExited.current) return;
+      // Prevent default scrolling during snapping to avoid erratic jumping
+      e.preventDefault();
+    };
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      if (heroExited.current) return;
+      const touchEndY = e.changedTouches[0].clientY;
+      const deltaY = touchStartY - touchEndY;
+
+      const { current: refs } = threeRefs;
+      const currentIdx = refs.lastIndex ?? 0;
+
+      // Threshold of 50px to trigger swipe
+      if (deltaY > 50) {
+        // Swipe UP (scroll down)
+        if (wheelCooldown.current) return;
+        wheelCooldown.current = true;
+        setTimeout(() => { wheelCooldown.current = false; }, 650);
+
+        if (currentIdx < TOTAL_STEPS) {
+          goToSection(currentIdx + 1);
+        } else {
+          exitHero();
+        }
+      } else if (deltaY < -50) {
+        // Swipe DOWN (scroll up)
+        if (wheelCooldown.current) return;
+        wheelCooldown.current = true;
+        setTimeout(() => { wheelCooldown.current = false; }, 650);
+
+        if (currentIdx > 0) goToSection(currentIdx - 1);
+      }
+    };
+
     const handleWheel = (e: WheelEvent) => {
       if (heroExited.current) return; // let native scroll work in portfolio
 
@@ -707,11 +798,17 @@ export const Component = () => {
     };
 
     window.addEventListener('wheel', handleWheel, { passive: false });
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
+    window.addEventListener('touchend', handleTouchEnd, { passive: true });
     window.addEventListener('scroll', handleScrollBack, { passive: true });
     applyCamera(0);
 
     return () => {
       window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
       window.removeEventListener('scroll', handleScrollBack);
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps

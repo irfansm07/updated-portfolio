@@ -151,6 +151,29 @@ export function Experience() {
         .exp-card:hover {
           transform: translateX(6px);
         }
+
+        @media (max-width: 768px) {
+          .exp-item {
+            padding-left: 1.75rem;
+            margin-bottom: 1.5rem;
+          }
+          .exp-card {
+            padding: 1.25rem;
+          }
+        }
+
+        @media (max-width: 576px) {
+          .exp-item {
+            padding-left: 1.25rem;
+            margin-bottom: 1.25rem;
+          }
+          .exp-card {
+            padding: 1rem;
+          }
+          .exp-card:hover {
+            transform: none;
+          }
+        }
       `}</style>
     </section>
   );

@@ -1,0 +1,42 @@
+.curved-loop-jacket {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0;
+  margin: -3rem 0; /* negative margin to pull the sections closer and overlay beautifully */
+  overflow: visible;
+  position: relative;
+  z-index: 40;
+  pointer-events: auto;
+}
+
+.curved-loop-svg {
+  user-select: none;
+  width: 100%;
+  aspect-ratio: 144 / 24;
+  overflow: visible;
+  display: block;
+  font-size: 3.2rem;
+  font-family: var(--font-heading), 'Space Grotesk', sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+  line-height: 1;
+  letter-spacing: 0.05em;
+  filter: drop-shadow(0 4px 15px rgba(99, 102, 241, 0.25));
+}
+
+/* Custom class for styling the loop text path */
+.curved-text-path {
+  fill: url(#curved-gradient);
+  text-shadow: 0 0 10px rgba(165, 180, 252, 0.4);
+}
+
+@media (max-width: 768px) {
+  .curved-loop-svg {
+    font-size: 2rem;
+  }
+  .curved-loop-jacket {
+    margin: -1.5rem 0;
+  }
+}
