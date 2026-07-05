@@ -37,9 +37,11 @@ const projects = [
   },
 ];
 
+type ProjectType = typeof projects[0];
+
 export function Projects() {
   const ref = useRef<HTMLElement>(null);
-  const [activeCard, setActiveCard] = useState<number | null>(null);
+  const [selectedProject, setSelectedProject] = useState<ProjectType | null>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -60,94 +62,78 @@ export function Projects() {
         What I&apos;ve <span className="glow-text">Built</span>
       </h2>
 
-      <div className="projects-grid">
-        {projects.map((p, idx) => (
-          <div
-            key={p.id}
-            className={`project-card glass-card ${activeCard === p.id ? 'active' : ''}`}
-            onMouseEnter={() => setActiveCard(p.id)}
-            onMouseLeave={() => setActiveCard(null)}
-            style={{ animationDelay: `${idx * 0.15}s` }}
-          >
-            {/* Glow orb */}
-            <div className="card-glow" />
 
-            {/* Interactive MagicRings Background Effect */}
-            <div className="magic-rings-bg">
+      {/* Details Modal Overlay */}
+      {selectedProject && (
+        <div className="project-modal-overlay" onClick={() => setSelectedProject(null)}>
+          <div className="project-modal-card glass-card" onClick={(e) => e.stopPropagation()}>
+            {/* Close Button */}
+            <button className="modal-close-btn" onClick={() => setSelectedProject(null)} aria-label="Close modal">
+              ✕
+            </button>
+
+            {/* Magic Rings Ambient Background (Inside Modal) */}
+            <div className="modal-rings-wrap">
               <MagicRings
-                color={p.tagColor}
+                color={selectedProject.tagColor}
                 colorTwo="#6366f1"
-                ringCount={5}
-                speed={0.6}
-                attenuation={12}
-                lineThickness={1.5}
-                baseRadius={0.2}
-                radiusStep={0.14}
+                ringCount={6}
+                speed={0.7}
+                attenuation={9}
+                lineThickness={2.2}
+                baseRadius={0.3}
+                radiusStep={0.12}
                 scaleRate={0.06}
-                opacity={1}
+                opacity={0.8}
                 followMouse={true}
-                mouseInfluence={0.12}
-                hoverScale={1.15}
-                parallax={0.04}
+                mouseInfluence={0.15}
                 clickBurst={true}
               />
             </div>
 
-            <div className="project-card-content">
-              {/* Header */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
-                <div>
-                  <span
-                    className="project-tag"
-                    style={{ background: `${p.tagColor}18`, color: p.tagColor, borderColor: `${p.tagColor}44` }}
-                  >
-                    {p.tag}
-                  </span>
-                  <h3 className="project-name">{p.name}</h3>
-                </div>
-                {p.url !== '#' && (
-                  <a
-                    href={p.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="project-link-btn"
-                    aria-label={`Visit ${p.name}`}
-                  >
-                    <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                      <polyline points="15 3 21 3 21 9" />
-                      <line x1="10" y1="14" x2="21" y2="3" />
-                    </svg>
-                  </a>
-                )}
+            {/* Detailed Content */}
+            <div className="modal-content-inner">
+              <div className="modal-header">
+                <span className="modal-tag" style={{ color: selectedProject.tagColor, background: `${selectedProject.tagColor}15`, borderColor: `${selectedProject.tagColor}35` }}>
+                  {selectedProject.tag}
+                </span>
+                <h3 className="modal-title">{selectedProject.name}</h3>
               </div>
 
-              <p className="project-desc">{p.description}</p>
+              <p className="modal-desc">{selectedProject.description}</p>
 
-              {/* Highlights */}
-              <ul className="project-highlights">
-                {p.highlights.map((h) => (
-                  <li key={h}>
-                    <span className="highlight-dot" />
+              <h4 className="modal-section-subtitle">Key Highlights</h4>
+              <ul className="modal-highlights">
+                {selectedProject.highlights.map((h, i) => (
+                  <li key={i}>
+                    <span className="modal-highlight-dot" style={{ backgroundColor: selectedProject.tagColor }} />
                     {h}
                   </li>
                 ))}
               </ul>
 
-              {/* Tech stack */}
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginTop: '1.5rem' }}>
-                {p.tech.map((t) => (
-                  <span key={t} className="skill-tag" style={{ fontSize: '0.7rem', padding: '0.25rem 0.7rem' }}>
+              <h4 className="modal-section-subtitle">Tech Stack</h4>
+              <div className="modal-tech-stack">
+                {selectedProject.tech.map((t) => (
+                  <span key={t} className="skill-tag">
                     {t}
                   </span>
                 ))}
               </div>
+
+              {selectedProject.url !== '#' && (
+                <div className="modal-action">
+                  <a href={selectedProject.url} target="_blank" rel="noopener noreferrer" className="btn-primary modal-btn">
+                    🚀 Visit Live Site
+                  </a>
+                </div>
+              )}
             </div>
           </div>
-        ))}
-      </div>
+        </div>
+      )}
 
-      <style jsx>{`
+       <style jsx>{`
         .fade-section {
           opacity: 0;
           transform: translateY(40px);
@@ -157,163 +143,319 @@ export function Projects() {
           opacity: 1;
           transform: translateY(0);
         }
-
-        .projects-grid {
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 1.75rem;
+        #projects {
+          padding-bottom: 2rem !important;
         }
 
-        @media (max-width: 768px) {
-          .projects-grid { grid-template-columns: 1fr; }
+        /* Project Cards Container Grid */
+        .project-cards-container {
+          display: flex;
+          justify-content: center;
+          align-items: stretch;
+          gap: 2rem;
+          max-width: 820px;
+          margin: 2rem auto 4rem auto;
+          width: 100%;
         }
 
-        .project-card {
-          position: relative;
-          padding: 2rem;
+        /* Premium Monogram Card */
+        .project-card-item {
+          flex: 1;
+          min-width: 280px;
+          max-width: 360px;
+          height: 220px;
+          background: #12151C; /* Custom premium dark background */
+          border-radius: 16px;
           overflow: hidden;
-          transition: transform 0.35s ease, box-shadow 0.35s ease;
-          cursor: default;
+          position: relative;
+          display: flex;
+          flex-direction: column;
+          border: 1px solid rgba(91, 141, 239, 0.15); /* Soft glowing border */
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+          text-align: left;
+          cursor: pointer;
+          transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), border-color 0.3s, box-shadow 0.3s;
         }
 
-        .project-card:hover {
-          transform: translateY(-6px);
+        .project-card-item:hover {
+          transform: translateY(-8px);
+          border-color: rgba(99, 102, 241, 0.4);
+          box-shadow: 0 15px 35px rgba(99, 102, 241, 0.15), 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
-        .card-glow {
+        .preview-top-stripe {
+          height: 4px;
+          width: 100%;
+        }
+
+        .preview-inner {
+          padding: 1.75rem; /* p-6 to p-8 padding */
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start; /* Left-aligned */
+          height: 100%;
+          text-align: left;
+        }
+
+        .preview-header-row {
+          width: 100%;
+          display: flex;
+          justify-content: flex-start;
+          margin-bottom: 0.8rem;
+        }
+
+        .preview-icon-wrapper {
+          width: 40px;
+          height: 40px;
+          border-radius: 8px; /* Rounded square */
+          border: 1.5px solid;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: rgba(255, 255, 255, 0.02);
+          transition: transform 0.3s ease;
+        }
+
+        .project-card-item:hover .preview-icon-wrapper {
+          transform: scale(1.05);
+        }
+
+        .preview-icon-text {
+          font-family: var(--font-mono);
+          font-size: 0.85rem;
+          font-weight: 700;
+          letter-spacing: -0.02em;
+        }
+
+        .preview-subtitle {
+          font-family: var(--font-mono);
+          font-size: 0.7rem;
+          font-weight: 500;
+          color: #8A8F9C; /* Muted gray label */
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          margin-bottom: 0.35rem;
+        }
+
+        .preview-title {
+          font-family: var(--font-heading);
+          font-size: 1.5rem; /* bold, text-2xl/3xl */
+          font-weight: 700;
+          color: #EDEFF3; /* Off-white text */
+          margin-bottom: 0.5rem;
+          letter-spacing: -0.01em;
+        }
+
+        .preview-cta {
+          font-family: var(--font-mono);
+          font-size: 0.75rem;
+          color: var(--accent-2);
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          font-weight: 600;
+          margin-top: auto; /* Anchor to bottom */
+          display: inline-flex;
+          align-items: center;
+          gap: 0.25rem;
+          border-bottom: 1px solid rgba(129, 140, 248, 0.3);
+          padding-bottom: 2px;
+          transition: border-color 0.3s;
+        }
+
+        .project-card-item:hover .preview-cta {
+          border-color: var(--accent-2);
+        }
+
+        .arrow-icon {
+          transition: transform 0.2s ease;
+        }
+
+        .project-card-item:hover .arrow-icon {
+          transform: translateX(4px);
+        }
+
+        /* Modal Overlay & Card styling */
+        .project-modal-overlay {
+          position: fixed;
+          inset: 0;
+          z-index: 1000;
+          background: rgba(0, 0, 0, 0.75);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding: 1.5rem;
+          animation: modalFadeIn 0.3s ease forwards;
+        }
+
+        @keyframes modalFadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+
+        .project-modal-card {
+          width: 100%;
+          max-width: 620px;
+          background: rgba(10, 10, 30, 0.7) !important;
+          border: 1px solid var(--border) !important;
+          border-radius: 20px;
+          overflow: hidden;
+          position: relative;
+          padding: 2.5rem;
+          box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(99, 102, 241, 0.15);
+          animation: modalScaleUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes modalScaleUp {
+          from { transform: scale(0.9) translateY(20px); opacity: 0; }
+          to { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .modal-close-btn {
           position: absolute;
-          top: -60px;
-          right: -60px;
-          width: 200px;
-          height: 200px;
+          top: 1.25rem;
+          right: 1.25rem;
+          width: 32px;
+          height: 32px;
           border-radius: 50%;
-          background: radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%);
-          pointer-events: none;
-          transition: opacity 0.4s;
-          opacity: 0;
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          color: var(--text-muted);
+          font-size: 0.85rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: all 0.25s;
+          z-index: 10;
         }
 
-        .project-card:hover .card-glow {
-          opacity: 1;
+        .modal-close-btn:hover {
+          background: rgba(239, 68, 68, 0.15);
+          border-color: rgba(239, 68, 68, 0.3);
+          color: #ef4444;
+          transform: rotate(90deg);
         }
 
-        .magic-rings-bg {
+        .modal-rings-wrap {
           position: absolute;
           inset: 0;
           z-index: 0;
           pointer-events: none;
-          opacity: 0.12;
-          transition: opacity 0.5s ease;
+          opacity: 0.4;
         }
 
-        .project-card:hover .magic-rings-bg {
-          opacity: 0.45;
-        }
-
-        .project-card-content {
+        .modal-content-inner {
           position: relative;
           z-index: 1;
-          pointer-events: auto;
         }
 
-        .project-tag {
+        .modal-header {
+          margin-bottom: 1.5rem;
+        }
+
+        .modal-tag {
           display: inline-block;
           font-family: var(--font-mono);
-          font-size: 0.65rem;
+          font-size: 0.7rem;
           letter-spacing: 0.1em;
           padding: 0.25rem 0.75rem;
           border-radius: 999px;
           border: 1px solid;
-          margin-bottom: 0.6rem;
+          margin-bottom: 0.75rem;
           text-transform: uppercase;
         }
 
-        .project-name {
+        .modal-title {
           font-family: var(--font-heading);
-          font-size: 1.6rem;
+          font-size: 2.2rem;
           font-weight: 700;
           color: var(--text-primary);
           letter-spacing: -0.02em;
+          line-height: 1.1;
         }
 
-        .project-link-btn {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 36px;
-          height: 36px;
-          border-radius: 8px;
-          border: 1px solid var(--border);
+        .modal-desc {
           color: var(--text-muted);
-          text-decoration: none;
-          transition: all 0.25s;
-          flex-shrink: 0;
-        }
-
-        .project-link-btn:hover {
-          border-color: var(--accent);
-          color: var(--accent-2);
-          background: rgba(99,102,241,0.1);
-        }
-
-        .project-desc {
-          color: var(--text-muted);
-          font-size: 0.95rem;
+          font-size: 1rem;
           line-height: 1.8;
-          margin-bottom: 1.25rem;
+          margin-bottom: 2rem;
         }
 
-        .project-highlights {
+        .modal-section-subtitle {
+          font-family: var(--font-heading);
+          font-size: 1.05rem;
+          font-weight: 600;
+          color: var(--text-primary);
+          margin-bottom: 0.85rem;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+        }
+
+        .modal-highlights {
           list-style: none;
           display: flex;
           flex-direction: column;
-          gap: 0.5rem;
+          gap: 0.75rem;
+          margin-bottom: 2rem;
+          padding: 0;
         }
 
-        .project-highlights li {
+        .modal-highlights li {
           display: flex;
           align-items: flex-start;
-          gap: 0.6rem;
+          gap: 0.8rem;
           color: var(--text-muted);
-          font-size: 0.875rem;
+          font-size: 0.9rem;
           line-height: 1.6;
         }
 
-        .highlight-dot {
+        .modal-highlight-dot {
           display: block;
-          width: 5px;
-          height: 5px;
+          width: 6px;
+          height: 6px;
           border-radius: 50%;
-          background: var(--accent);
           flex-shrink: 0;
-          margin-top: 0.45rem;
+          margin-top: 0.5rem;
+        }
+
+        .modal-tech-stack {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.5rem;
+          margin-bottom: 2rem;
+        }
+
+        .modal-action {
+          margin-top: 2.5rem;
+        }
+
+        .modal-btn {
+          width: 100%;
+          justify-content: center;
+          padding: 0.85rem;
+          font-size: 0.95rem;
         }
 
         @media (max-width: 768px) {
-          .projects-grid { grid-template-columns: 1fr; }
-          .project-card {
-            padding: 1.5rem;
+          .project-cards-container {
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
           }
-          .project-name {
-            font-size: 1.35rem;
+          .project-card-item {
+            width: 100%;
+            max-width: 400px;
           }
-        }
-
-        @media (max-width: 576px) {
-          .project-card {
-            padding: 1.25rem;
+          .project-modal-card {
+            padding: 1.75rem;
           }
-          .project-name {
-            font-size: 1.2rem;
+          .modal-title {
+            font-size: 1.8rem;
           }
-          .project-desc {
-            font-size: 0.875rem;
-          }
-          .project-highlights li {
-            font-size: 0.8rem;
-          }
-          .project-card:hover {
-            transform: none;
+          .modal-desc {
+            font-size: 0.9rem;
           }
         }
       `}</style>

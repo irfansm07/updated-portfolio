@@ -8,6 +8,7 @@ import { Contact } from '@/components/Contact';
 import CurvedLoop from '@/components/ui/CurvedLoop';
 import ScrollVelocity from '@/components/ui/ScrollVelocity';
 import dynamic from 'next/dynamic';
+import FolderProjects from '@/components/FolderProjects';
 
 // Load the Three.js hero only on client side (no SSR)
 const HeroSection = dynamic(
@@ -35,6 +36,7 @@ export default function HomePage() {
         />
         <Skills />
         <Projects />
+        <FolderProjects />
         <Experience />
         <Education />
         <ScrollVelocity 

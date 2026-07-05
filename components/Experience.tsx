@@ -59,7 +59,7 @@ export function Experience() {
 
   return (
     <section id="experience" ref={ref} className="section-wrapper fade-section">
-      <div className="section-divider" style={{ marginBottom: '6rem' }} />
+      <div className="section-divider" style={{ marginBottom: '2.5rem' }} />
       <div className="section-label">/ experience</div>
       <h2 className="section-title">
         Where I&apos;ve <span className="glow-text">Worked</span>

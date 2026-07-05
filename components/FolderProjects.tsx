@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import Folder from './Folder';
+import Folder from './ui/Folder';
 import ProjectCard from './ProjectCard';
 import MagicRings from './ui/MagicRings';
 

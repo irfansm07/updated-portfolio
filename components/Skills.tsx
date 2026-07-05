@@ -502,7 +502,7 @@ export function Skills() {
           position: absolute;
           inset: 0;
           pointer-events: none;
-          z-index: 1;
+          z-index: 0;
           overflow: hidden;
           display: flex;
           flex-direction: column;
@@ -521,20 +521,20 @@ export function Skills() {
           text-shadow: 0 0 8px rgba(99, 102, 241, 0.4);
           white-space: nowrap;
         }
-        .sk-logoloop-row-1 { opacity: 0.3; }
-        .sk-logoloop-row-2 { opacity: 0.2; }
-        .sk-logoloop-row-3 { opacity: 0.35; }
-        .sk-logoloop-row-4 { opacity: 0.18; }
-        .sk-logoloop-row-5 { opacity: 0.25; }
-        .sk-logoloop-row-6 { opacity: 0.22; }
+        .sk-logoloop-row-1 { opacity: 0.08; }
+        .sk-logoloop-row-2 { opacity: 0.06; }
+        .sk-logoloop-row-3 { opacity: 0.09; }
+        .sk-logoloop-row-4 { opacity: 0.05; }
+        .sk-logoloop-row-5 { opacity: 0.07; }
+        .sk-logoloop-row-6 { opacity: 0.06; }
         @media (max-width: 768px) {
           .sk-logoloop-bg { padding: 20px 0; }
-          .sk-logoloop-row-1 { opacity: 0.22; }
-          .sk-logoloop-row-2 { opacity: 0.15; }
-          .sk-logoloop-row-3 { opacity: 0.25; }
-          .sk-logoloop-row-4 { opacity: 0.12; }
-          .sk-logoloop-row-5 { opacity: 0.18; }
-          .sk-logoloop-row-6 { opacity: 0.15; }
+          .sk-logoloop-row-1 { opacity: 0.06; }
+          .sk-logoloop-row-2 { opacity: 0.05; }
+          .sk-logoloop-row-3 { opacity: 0.07; }
+          .sk-logoloop-row-4 { opacity: 0.04; }
+          .sk-logoloop-row-5 { opacity: 0.06; }
+          .sk-logoloop-row-6 { opacity: 0.05; }
         }
         .sk { position: relative; max-width: 1100px; margin: 0 auto; padding: 80px 32px 48px; overflow: hidden; }
         .sk-canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; opacity: 0.7; }
@@ -587,7 +587,7 @@ export function Skills() {
         @keyframes sk-card-border-shimmer { 0% { background-position: 0% 0%; } 50% { background-position: 100% 100%; } 100% { background-position: 0% 0%; } }
         .bento-card-wrapper.span-2 { grid-column: span 2; }
         .bento-card-wrapper.span-1 { grid-column: span 1; }
-        .bento-card { background: #03030c; border-radius: 15px; padding: 32px; display: flex; flex-direction: column; gap: 24px; width: 100%; position: relative; z-index: 2; background-image: radial-gradient(350px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(99,102,241,0.04), transparent 60%); overflow: hidden; }
+        .bento-card { background: rgba(3, 3, 12, 0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 15px; padding: 32px; display: flex; flex-direction: column; gap: 24px; width: 100%; position: relative; z-index: 2; background-image: radial-gradient(350px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(99,102,241,0.04), transparent 60%); overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.08); }
         .bento-card::before { content: ''; position: absolute; top: -100%; left: -100%; width: 300%; height: 300%; background: linear-gradient(45deg, transparent 30%, rgba(99,102,241,0.04) 50%, transparent 70%); animation: sk-inner-scan 6s ease-in-out infinite; pointer-events: none; }
         @keyframes sk-inner-scan { 0% { transform: translate(-30%,-30%); opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { transform: translate(30%,30%); opacity: 0; } }
         .bento-card-header { display: flex; gap: 16px; align-items: flex-start; }

@@ -1,10 +1,9 @@
 'use client';
-
-import { useState } from 'react';
-import TrueFocus from './TrueFocus';
+import React, { useState } from 'react';
+import TrueFocus from '../TrueFocus';
 import './Folder.css';
 
-const darkenColor = (hex: string, percent: number): string => {
+const darkenColor = (hex: string, percent: number) => {
   let color = hex.startsWith('#') ? hex.slice(1) : hex;
   if (color.length === 3) {
     color = color
@@ -30,17 +29,14 @@ interface FolderProps {
   folderStyle?: React.CSSProperties;
 }
 
-const Folder = ({ color = '#5227FF', size = 1, items = [], className = '', folderStyle = {} }: FolderProps) => {
+export default function Folder({ color = '#5227FF', size = 1, items = [], className = '', folderStyle = {} }: FolderProps) {
   const maxItems = 3;
   const papers = items.slice(0, maxItems);
-  while (papers.length < maxItems) {
-    papers.push(null);
-  }
 
   const [open, setOpen] = useState(false);
-  const [paperOffsets, setPaperOffsets] = useState(Array.from({ length: maxItems }, () => ({ x: 0, y: 0 })));
+  const [paperOffsets, setPaperOffsets] = useState(Array.from({ length: papers.length }, () => ({ x: 0, y: 0 })));
 
-  const folderBackColor = darkenColor(color, 0.08);
+  const folderBackColor = darkenColor(color, 0.12);
   const paper1 = darkenColor('#ffffff', 0.1);
   const paper2 = darkenColor('#ffffff', 0.05);
   const paper3 = '#ffffff';
@@ -48,7 +44,7 @@ const Folder = ({ color = '#5227FF', size = 1, items = [], className = '', folde
   const handleClick = () => {
     setOpen(prev => !prev);
     if (open) {
-      setPaperOffsets(Array.from({ length: maxItems }, () => ({ x: 0, y: 0 })));
+      setPaperOffsets(Array.from({ length: papers.length }, () => ({ x: 0, y: 0 })));
     }
   };
 
@@ -66,7 +62,7 @@ const Folder = ({ color = '#5227FF', size = 1, items = [], className = '', folde
     });
   };
 
-  const handlePaperMouseLeave = (e: React.MouseEvent<HTMLDivElement>, index: number) => {
+  const handlePaperMouseLeave = (index: number) => {
     setPaperOffsets(prev => {
       const newOffsets = [...prev];
       newOffsets[index] = { x: 0, y: 0 };
@@ -74,7 +70,7 @@ const Folder = ({ color = '#5227FF', size = 1, items = [], className = '', folde
     });
   };
 
-  const internalFolderStyle: React.CSSProperties = {
+  const internalFolderStyle = {
     '--folder-color': color,
     '--folder-back-color': folderBackColor,
     '--paper-1': paper1,
@@ -109,13 +105,23 @@ const Folder = ({ color = '#5227FF', size = 1, items = [], className = '', folde
                 key={i}
                 className={`paper paper-${i + 1}`}
                 onMouseMove={e => handlePaperMouseMove(e, i)}
-                onMouseLeave={e => handlePaperMouseLeave(e, i)}
-                onClick={(e) => e.stopPropagation()}
+                onMouseLeave={() => handlePaperMouseLeave(i)}
+                onClick={e => {
+                  if (open) {
+                    // Prevent folder closing when clicking a paper
+                    e.stopPropagation();
+                  }
+                }}
                 style={
                   open
                     ? {
                         '--magnet-x': `${paperOffsets[i]?.x || 0}px`,
-                        '--magnet-y': `${paperOffsets[i]?.y || 0}px`
+                        '--magnet-y': `${paperOffsets[i]?.y || 0}px`,
+                        transform: i === 0 
+                          ? `translate(calc(-110% + var(--magnet-x, 0px)), calc(-42% + var(--magnet-y, 0px))) rotateZ(-6deg)`
+                          : i === 1 
+                          ? `translate(calc(10% + var(--magnet-x, 0px)), calc(-42% + var(--magnet-y, 0px))) rotateZ(6deg)`
+                          : `translate(calc(-50% + var(--magnet-x, 0px)), calc(-65% + var(--magnet-y, 0px))) rotateZ(2deg)`
                       } as React.CSSProperties
                     : {}
                 }
@@ -126,7 +132,6 @@ const Folder = ({ color = '#5227FF', size = 1, items = [], className = '', folde
             <div className="folder__front">
               <div className="folder-text">project folder</div>
             </div>
-            <div className="folder__front right"></div>
           </div>
         </div>
       </div>
@@ -143,6 +148,4 @@ const Folder = ({ color = '#5227FF', size = 1, items = [], className = '', folde
       </div>
     </div>
   );
-};
-
-export default Folder;
+}
