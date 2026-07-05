@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
+import MagicRings from './ui/MagicRings';
 
 const projects = [
   {
@@ -71,53 +72,76 @@ export function Projects() {
             {/* Glow orb */}
             <div className="card-glow" />
 
-            {/* Header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
-              <div>
-                <span
-                  className="project-tag"
-                  style={{ background: `${p.tagColor}18`, color: p.tagColor, borderColor: `${p.tagColor}44` }}
-                >
-                  {p.tag}
-                </span>
-                <h3 className="project-name">{p.name}</h3>
-              </div>
-              {p.url !== '#' && (
-                <a
-                  href={p.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="project-link-btn"
-                  aria-label={`Visit ${p.name}`}
-                >
-                  <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                    <polyline points="15 3 21 3 21 9" />
-                    <line x1="10" y1="14" x2="21" y2="3" />
-                  </svg>
-                </a>
-              )}
+            {/* Interactive MagicRings Background Effect */}
+            <div className="magic-rings-bg">
+              <MagicRings
+                color={p.tagColor}
+                colorTwo="#6366f1"
+                ringCount={5}
+                speed={0.6}
+                attenuation={12}
+                lineThickness={1.5}
+                baseRadius={0.2}
+                radiusStep={0.14}
+                scaleRate={0.06}
+                opacity={1}
+                followMouse={true}
+                mouseInfluence={0.12}
+                hoverScale={1.15}
+                parallax={0.04}
+                clickBurst={true}
+              />
             </div>
 
-            <p className="project-desc">{p.description}</p>
+            <div className="project-card-content">
+              {/* Header */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+                <div>
+                  <span
+                    className="project-tag"
+                    style={{ background: `${p.tagColor}18`, color: p.tagColor, borderColor: `${p.tagColor}44` }}
+                  >
+                    {p.tag}
+                  </span>
+                  <h3 className="project-name">{p.name}</h3>
+                </div>
+                {p.url !== '#' && (
+                  <a
+                    href={p.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="project-link-btn"
+                    aria-label={`Visit ${p.name}`}
+                  >
+                    <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                      <polyline points="15 3 21 3 21 9" />
+                      <line x1="10" y1="14" x2="21" y2="3" />
+                    </svg>
+                  </a>
+                )}
+              </div>
 
-            {/* Highlights */}
-            <ul className="project-highlights">
-              {p.highlights.map((h) => (
-                <li key={h}>
-                  <span className="highlight-dot" />
-                  {h}
-                </li>
-              ))}
-            </ul>
+              <p className="project-desc">{p.description}</p>
 
-            {/* Tech stack */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginTop: '1.5rem' }}>
-              {p.tech.map((t) => (
-                <span key={t} className="skill-tag" style={{ fontSize: '0.7rem', padding: '0.25rem 0.7rem' }}>
-                  {t}
-                </span>
-              ))}
+              {/* Highlights */}
+              <ul className="project-highlights">
+                {p.highlights.map((h) => (
+                  <li key={h}>
+                    <span className="highlight-dot" />
+                    {h}
+                  </li>
+                ))}
+              </ul>
+
+              {/* Tech stack */}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginTop: '1.5rem' }}>
+                {p.tech.map((t) => (
+                  <span key={t} className="skill-tag" style={{ fontSize: '0.7rem', padding: '0.25rem 0.7rem' }}>
+                    {t}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
         ))}
@@ -171,6 +195,25 @@ export function Projects() {
 
         .project-card:hover .card-glow {
           opacity: 1;
+        }
+
+        .magic-rings-bg {
+          position: absolute;
+          inset: 0;
+          z-index: 0;
+          pointer-events: none;
+          opacity: 0.12;
+          transition: opacity 0.5s ease;
+        }
+
+        .project-card:hover .magic-rings-bg {
+          opacity: 0.45;
+        }
+
+        .project-card-content {
+          position: relative;
+          z-index: 1;
+          pointer-events: auto;
         }
 
         .project-tag {
