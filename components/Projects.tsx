@@ -37,7 +37,7 @@ const projects = [
   },
 ];
 
-type ProjectType = typeof projects[0];
+type ProjectType = typeof projects[number];
 
 export function Projects() {
   const ref = useRef<HTMLElement>(null);

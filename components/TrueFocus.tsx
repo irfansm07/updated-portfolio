@@ -24,7 +24,6 @@ const TrueFocus: React.FC<TrueFocusProps> = ({
   pauseBetweenAnimations = 1
 }) => {
   const [focusedIndex, setFocusedIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
   const wordRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const [bracketPosition, setBracketPosition] = useState({ top: 0, left: 0, width: 0, height: 0 });
 
@@ -34,13 +33,11 @@ const TrueFocus: React.FC<TrueFocusProps> = ({
     if (manualMode) return;
 
     const interval = setInterval(() => {
-      if (!isPaused) {
-        setFocusedIndex(prev => (prev + 1) % words.length);
-      }
+      setFocusedIndex(prev => (prev + 1) % words.length);
     }, (animationDuration + pauseBetweenAnimations) * 1000);
 
     return () => clearInterval(interval);
-  }, [manualMode, isPaused, animationDuration, pauseBetweenAnimations, words.length]);
+  }, [manualMode, animationDuration, pauseBetweenAnimations, words.length]);
 
   useEffect(() => {
     const currentWord = wordRefs.current[focusedIndex];
