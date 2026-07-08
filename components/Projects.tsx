@@ -62,6 +62,32 @@ export function Projects() {
         What I&apos;ve <span className="glow-text">Built</span>
       </h2>
 
+      <div className="project-cards-container">
+        {projects.map((project) => {
+          const initials = project.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+          return (
+            <div
+              key={project.id}
+              className="project-card-item"
+              onClick={() => setSelectedProject(project)}
+            >
+              <div className="preview-top-stripe" style={{ backgroundColor: project.tagColor }} />
+              <div className="preview-inner">
+                <div className="preview-header-row">
+                  <div className="preview-icon-wrapper" style={{ borderColor: `${project.tagColor}55`, color: project.tagColor }}>
+                    <span className="preview-icon-text">{initials}</span>
+                  </div>
+                </div>
+                <div className="preview-subtitle">{project.tag}</div>
+                <h3 className="preview-title">{project.name}</h3>
+                <div className="preview-cta">
+                  Details <span className="arrow-icon">→</span>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
 
       {/* Details Modal Overlay */}
       {selectedProject && (
