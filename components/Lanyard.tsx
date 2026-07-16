@@ -1,4 +1,5 @@
 /* eslint-disable react/no-unknown-property */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -19,42 +20,6 @@ import './Lanyard.css';
 // ── Asset paths ───────────────────────────────────────────────────────────────
 const cardGLB    = '/card.glb';
 const lanyardPNG = '/lanyard.png';
-
-// ── Generate "SMI" band texture as a data URI (no external file needed) ───────
-function makeSMIBandDataURI(): string {
-  if (typeof document === 'undefined') return '';
-  const W = 64, H = 256;
-  const canvas = document.createElement('canvas');
-  canvas.width = W; canvas.height = H;
-  const ctx = canvas.getContext('2d')!;
-
-  // Background: dark navy
-  ctx.fillStyle = '#0f0f1e';
-  ctx.fillRect(0, 0, W, H);
-
-  // Draw repeating "SMI" text
-  ctx.font = 'bold 13px "Space Mono", monospace';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillStyle = '#a5b4fc';
-  const step = 56;
-  for (let y = step / 2; y < H + step; y += step) {
-    ctx.fillText('SMI', W / 2, y);
-  }
-
-  // Subtle separator lines
-  ctx.strokeStyle = 'rgba(99,102,241,0.25)';
-  ctx.lineWidth = 1;
-  for (let y = step; y < H; y += step) {
-    ctx.beginPath();
-    ctx.moveTo(8, y); ctx.lineTo(W - 8, y);
-    ctx.stroke();
-  }
-
-  return canvas.toDataURL('image/png');
-}
-
-const SMI_BAND_URI = typeof document !== 'undefined' ? makeSMIBandDataURI() : '';
 
 extend({ MeshLineGeometry, MeshLineMaterial });
 
@@ -235,6 +200,7 @@ export default function Lanyard({
             >
               ✕
             </button>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={cardFaceURI}
               alt="Shaik Mohammad Irfan — Software Developer card"
@@ -361,7 +327,7 @@ function Band({
     composite.anisotropy  = 16;
     composite.needsUpdate = true;
     return composite;
-  }, [resolvedFrontImage, backImage, imageFit, frontTex, backTex, materials]);
+  }, [frontImage, cardFaceURI, backImage, imageFit, frontTex, backTex, materials]);
 
   const [curve] = useState(
     () =>
