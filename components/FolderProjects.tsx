@@ -12,6 +12,7 @@ const projects = [
     tag: 'Full-Stack · Live Production',
     tagColor: '#22c55e',
     url: 'https://vibexpert.online',
+    comingSoon: false,
     tech: ['Node.js', 'Supabase', 'Brevo', 'JavaScript'],
     description:
       'Campus-focused community platform featuring secure authentication, email onboarding flows, and real-time interaction. Live in production.',
@@ -25,9 +26,10 @@ const projects = [
   {
     id: 2,
     name: 'ZippRide',
-    tag: 'Mobile-First · PWA',
+    tag: 'Mobile-First · College Project',
     tagColor: '#f97316',
     url: '#',
+    comingSoon: false,
     tech: ['React', 'Vite', 'Supabase', 'PWA'],
     description:
       'High-performance ride-sharing app bridging traditional commuting and long-distance travel with real-time Indian Railways integration.',
@@ -41,17 +43,18 @@ const projects = [
   {
     id: 3,
     name: 'VibeXpert Shop',
-    tag: 'E-Commerce · Online Store',
+    tag: 'E-Commerce · Live Production',
     tagColor: '#ec4899',
     url: 'https://www.vibexpert.shop',
+    comingSoon: false,
     tech: ['Next.js', 'Stripe', 'Supabase', 'TailwindCSS'],
     description:
-      'Modern e-commerce platform for campus merchandise with seamless checkout experience, inventory management, and order tracking system.',
+      'Campus merchandise e-commerce platform live at vibexpert.shop — featuring a full Stripe-powered checkout flow, real-time inventory, and a mobile-first shopping experience.',
     highlights: [
-      'Secure payment integration with Stripe',
-      'Real-time inventory management',
-      'Order tracking and notification system',
-      'Responsive design optimized for mobile shopping',
+      'Stripe-powered secure checkout, live in production',
+      'Real-time inventory management & stock tracking',
+      'Order confirmation and notification system',
+      'Mobile-first responsive UI built with TailwindCSS',
     ],
   },
 ];
@@ -61,37 +64,50 @@ export default function FolderProjects() {
 
   return (
     <>
-      <div style={{ height: '400px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '280px 0 20px 0', pointerEvents: 'auto', position: 'relative', width: '100%', maxWidth: '900px', margin: '0 auto' }}>
-        <div style={{ position: 'absolute', top: '10%', left: '0', color: '#94A3B8', fontSize: '1rem', fontWeight: '500', textAlign: 'right', width: '150px', opacity: 1 }}>
-          3 Main Projects
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        paddingTop: '220px',
+        paddingBottom: '3rem',
+        pointerEvents: 'auto',
+        position: 'relative',
+        width: '100%',
+        maxWidth: '900px',
+        margin: '0 auto',
+        overflow: 'visible',
+      }}>
+        <div style={{ position: 'absolute', top: '40px', left: '0', color: '#94A3B8', fontSize: '1rem', fontWeight: '500', textAlign: 'right', width: '150px' }}>
+          3 Projects
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '6px' }}>
             <div style={{ width: '200px', height: '2px', background: '#5227FF' }}></div>
             <div style={{ width: '0', height: '0', borderTop: '6px solid transparent', borderBottom: '6px solid transparent', borderLeft: '10px solid #5227FF' }}></div>
           </div>
         </div>
-        <div style={{ position: 'absolute', top: '10%', right: '0', color: '#94A3B8', fontSize: '1rem', fontWeight: '500', textAlign: 'left', width: '150px', opacity: 1 }}>
+        <div style={{ position: 'absolute', top: '40px', right: '0', color: '#94A3B8', fontSize: '1rem', fontWeight: '500', textAlign: 'left', width: '160px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', marginTop: '6px' }}>
             <div style={{ width: '0', height: '0', borderTop: '6px solid transparent', borderBottom: '6px solid transparent', borderRight: '10px solid #5227FF' }}></div>
             <div style={{ width: '200px', height: '2px', background: '#5227FF' }}></div>
           </div>
-          1 College Project
+          ZippRide —<br />College Project
         </div>
-        <div style={{ position: 'absolute', bottom: '20%', left: '0', color: '#94A3B8', fontSize: '1rem', fontWeight: '500', textAlign: 'right', width: '160px', opacity: 1 }}>
-          2 Fully Functional<br />Live Websites
+        <div style={{ position: 'absolute', bottom: '48px', left: '0', color: '#94A3B8', fontSize: '1rem', fontWeight: '500', textAlign: 'right', width: '160px' }}>
+          3 Live<br />Productions
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '6px' }}>
             <div style={{ width: '200px', height: '2px', background: '#5227FF' }}></div>
             <div style={{ width: '0', height: '0', borderTop: '6px solid transparent', borderBottom: '6px solid transparent', borderLeft: '10px solid #5227FF' }}></div>
           </div>
         </div>
-        <div style={{ position: 'absolute', bottom: '20%', right: '0', color: '#94A3B8', fontSize: '1rem', fontWeight: '500', textAlign: 'left', width: '160px', opacity: 1 }}>
+        <div style={{ position: 'absolute', bottom: '48px', right: '0', color: '#94A3B8', fontSize: '1rem', fontWeight: '500', textAlign: 'left', width: '160px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', marginTop: '6px' }}>
             <div style={{ width: '0', height: '0', borderTop: '6px solid transparent', borderBottom: '6px solid transparent', borderRight: '10px solid #5227FF' }}></div>
             <div style={{ width: '200px', height: '2px', background: '#5227FF' }}></div>
           </div>
-          Startup Ready<br />Live Projects
+          2 Unique<br />Domains
         </div>
-        <div style={{ position: 'absolute', top: '45%', left: '0', color: '#94A3B8', fontSize: '0.9rem', fontWeight: '500', textAlign: 'right', width: '170px', opacity: 0.9, fontStyle: 'italic' }}>
-          More to be listed<br />Work in Progress
+        <div style={{ position: 'absolute', top: '120px', left: '0', color: '#94A3B8', fontSize: '0.9rem', fontWeight: '500', textAlign: 'right', width: '170px', opacity: 0.9, fontStyle: 'italic' }}>
+          More projects<br />coming soon
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '6px' }}>
             <div style={{ width: '200px', height: '2px', background: '#5227FF' }}></div>
             <div style={{ width: '0', height: '0', borderTop: '6px solid transparent', borderBottom: '6px solid transparent', borderLeft: '10px solid #5227FF' }}></div>
@@ -183,11 +199,24 @@ export default function FolderProjects() {
                 ))}
               </div>
 
-              {selectedProject.url !== '#' && (
+              {selectedProject.comingSoon ? (
+                <div className="modal-action">
+                  <div className="coming-soon-banner">
+                    <span className="coming-soon-dot" />
+                    <span>In Active Development — launching soon</span>
+                  </div>
+                </div>
+              ) : selectedProject.url !== '#' ? (
                 <div className="modal-action">
                   <a href={selectedProject.url} target="_blank" rel="noopener noreferrer" className="btn-primary modal-btn">
                     🚀 Visit Live Site
                   </a>
+                </div>
+              ) : (
+                <div className="modal-action">
+                  <div className="private-repo-banner">
+                    <span>🔒 Private / College Submission — not publicly deployed</span>
+                  </div>
                 </div>
               )}
             </div>
@@ -376,6 +405,45 @@ export default function FolderProjects() {
 
         .modal-action {
           margin-top: 2.5rem;
+        }
+
+        .coming-soon-banner {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          background: rgba(236, 72, 153, 0.08);
+          border: 1px solid rgba(236, 72, 153, 0.25);
+          border-radius: 10px;
+          padding: 0.85rem 1.2rem;
+          color: #f472b6;
+          font-size: 0.88rem;
+          font-family: var(--font-mono);
+        }
+
+        .coming-soon-dot {
+          display: inline-block;
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: #ec4899;
+          flex-shrink: 0;
+          animation: cs-pulse 1.6s ease-in-out infinite;
+        }
+
+        @keyframes cs-pulse {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.4); }
+          50% { box-shadow: 0 0 0 6px rgba(236, 72, 153, 0); }
+        }
+
+        .private-repo-banner {
+          background: rgba(99, 102, 241, 0.08);
+          border: 1px solid rgba(99, 102, 241, 0.2);
+          border-radius: 10px;
+          padding: 0.85rem 1.2rem;
+          color: #94a3b8;
+          font-size: 0.88rem;
+          font-family: var(--font-mono);
+          text-align: center;
         }
 
         .modal-btn {

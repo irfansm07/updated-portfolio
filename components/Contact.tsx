@@ -1,5 +1,9 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
+import dynamic from 'next/dynamic';
+
+// Load Lanyard client-side only — it needs WebGL/Canvas APIs
+const Lanyard = dynamic(() => import('./Lanyard'), { ssr: false });
 
 export function Contact() {
   const ref = useRef<HTMLElement>(null);
@@ -125,8 +129,17 @@ export function Contact() {
         Let&apos;s <span className="glow-text">Connect</span>
       </h2>
 
+      <div className="lanyard-hero">
+        <Lanyard
+          position={[0, 0, 8]}
+          gravity={[0, -40, 0]}
+          fov={28}
+          lanyardWidth={0.8}
+        />
+      </div>
+
       <div className="contact-grid">
-        {/* Left Column: CTA & Socials */}
+        {/* Left Column: socials */}
         <div className="contact-info">
           <p className="contact-intro">
             Whether you have a project in mind, want to collaborate, or just want to say hi — my inbox is always open.
@@ -304,6 +317,15 @@ export function Contact() {
           display: flex;
           flex-direction: column;
           gap: 2rem;
+        }
+
+        /* ── Lanyard hero (full-width above the grid) ── */
+        .lanyard-hero {
+          width: 100%;
+          height: 700px;
+          margin-bottom: 3rem;
+          position: relative;
+          overflow: visible;
         }
 
         .contact-intro {
@@ -599,9 +621,15 @@ export function Contact() {
             grid-template-columns: 1fr;
             gap: 3rem;
           }
+          .lanyard-hero {
+            height: 580px;
+          }
         }
 
         @media (max-width: 768px) {
+          .lanyard-hero {
+            height: 500px;
+          }
           .contact-form-card {
             padding: 1.75rem;
           }
@@ -630,6 +658,9 @@ export function Contact() {
         }
 
         @media (max-width: 576px) {
+          .lanyard-hero {
+            height: 420px;
+          }
           .contact-form-card {
             padding: 1.25rem;
           }

@@ -22,9 +22,9 @@
 }
 
 .truefocus-bracket {
-  position: fixed;
+  position: absolute;
   border: 2px solid;
   border-radius: 4px;
   pointer-events: none;
-  z-index: 1000;
+  z-index: 10;
 }

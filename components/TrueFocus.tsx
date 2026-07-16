@@ -42,12 +42,15 @@ const TrueFocus: React.FC<TrueFocusProps> = ({
   useEffect(() => {
     const currentWord = wordRefs.current[focusedIndex];
     if (currentWord) {
-      const rect = currentWord.getBoundingClientRect();
+      const containerEl = currentWord.closest('.truefocus-container') as HTMLElement;
+      if (!containerEl) return;
+      const containerRect = containerEl.getBoundingClientRect();
+      const wordRect = currentWord.getBoundingClientRect();
       setBracketPosition({
-        top: rect.top,
-        left: rect.left,
-        width: rect.width,
-        height: rect.height
+        top: wordRect.top - containerRect.top,
+        left: wordRect.left - containerRect.left,
+        width: wordRect.width,
+        height: wordRect.height
       });
     }
   }, [focusedIndex]);

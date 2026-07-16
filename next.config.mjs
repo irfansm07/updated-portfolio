@@ -1,8 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Removed static export to support dynamic imports and SSR features
   images: {
     unoptimized: true,
+  },
+  webpack(config) {
+    // Allow Next.js to import .glb binary assets as URLs
+    config.module.rules.push({
+      test: /\.glb$/,
+      type: 'asset/resource',
+    });
+    return config;
   },
 };
 

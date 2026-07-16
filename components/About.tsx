@@ -28,13 +28,14 @@ export function About() {
         <div>
           <p style={{ color: 'var(--text-muted)', lineHeight: '1.9', marginBottom: '1.5rem', fontSize: '1.05rem' }}>
             Hi, I&apos;m <strong style={{ color: 'var(--text-primary)' }}>Shaik Mohammad Irfan</strong> — a Front-End Developer
-            and Python Programmer passionate about building responsive, user-centric web applications that
-            actually make a difference.
+            and Python Programmer currently pursuing B.Tech in Computer Science at VIT Bhopal. I build
+            responsive, user-centric web applications from idea through to production deployment.
           </p>
           <p style={{ color: 'var(--text-muted)', lineHeight: '1.9', marginBottom: '2rem', fontSize: '1.05rem' }}>
-            Currently pursuing B.Tech in Computer Science at VIT Bhopal, I combine strong fundamentals in
-            HTML, CSS, JavaScript, and Python with growing full-stack expertise. I thrive under pressure,
-            ship fast, and obsess over clean code and intuitive UX.
+            I designed, built, and shipped <strong style={{ color: 'var(--text-primary)' }}>VibeXpert</strong> — a
+            campus community platform — end-to-end as a solo project, and delivered a complete client
+            website for AdThrive within a single 24-hour window. I care about the details: accessible
+            markup, consistent design, and code that&apos;s easy for the next person to pick up.
           </p>
           <div className="about-buttons">
             <a
@@ -52,6 +53,16 @@ export function About() {
               style={{ fontSize: '0.85rem' }}
             >
               GitHub
+            </a>
+            <a
+              href="/resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-outline"
+              style={{ fontSize: '0.85rem' }}
+              download
+            >
+              ↓ Resume
             </a>
           </div>
         </div>

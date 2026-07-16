@@ -1,3 +1,31 @@
+// ── Asset modules ──────────────────────────────────────────────────────────────
+declare module '*.glb' {
+  const src: string;
+  export default src;
+}
+
+declare module '*.png' {
+  const src: string;
+  export default src;
+}
+
+// ── Meshline ───────────────────────────────────────────────────────────────────
+declare module 'meshline' {
+  export const MeshLineGeometry: any;
+  export const MeshLineMaterial: any;
+}
+
+// Allow meshLineGeometry / meshLineMaterial as JSX intrinsic elements
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      meshLineGeometry: any;
+      meshLineMaterial: any;
+    }
+  }
+}
+
+// ── Three.js postprocessing ────────────────────────────────────────────────────
 declare module 'three/examples/jsm/postprocessing/EffectComposer' {
   import { WebGLRenderer, WebGLRenderTarget } from 'three';
   export class EffectComposer {

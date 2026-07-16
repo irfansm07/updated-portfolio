@@ -33,6 +33,16 @@ export function Navbar() {
           ))}
         </ul>
 
+        <a
+          href="/resume.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn-outline nav-resume"
+          style={{ fontSize: '0.75rem', padding: '0.5rem 1.2rem' }}
+          download
+        >
+          Resume
+        </a>
         <a href="#contact" className="btn-primary nav-cta" style={{ fontSize: '0.75rem', padding: '0.5rem 1.2rem' }}>
           Hire Me
         </a>
@@ -61,6 +71,17 @@ export function Navbar() {
             </li>
           ))}
         </ul>
+
+        <a
+          href="/resume.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn-outline mobile-resume"
+          onClick={() => setMenuOpen(false)}
+          download
+        >
+          Download Resume
+        </a>
 
         <a
           href="#contact"
@@ -187,7 +208,17 @@ export function Navbar() {
                       box-shadow 0.3s, background 0.3s;
         }
 
-        .mobile-menu.visible .mobile-cta {
+        .mobile-resume {
+          font-size: 0.9rem;
+          padding: 0.75rem 2rem;
+          opacity: 0;
+          transform: translateY(12px);
+          transition: opacity 0.4s ease 0.25s, transform 0.4s ease 0.25s,
+                      border-color 0.3s, background 0.3s;
+        }
+
+        .mobile-menu.visible .mobile-cta,
+        .mobile-menu.visible .mobile-resume {
           opacity: 1;
           transform: translateY(0);
         }
@@ -199,6 +230,9 @@ export function Navbar() {
           }
           .nav-cta {
             margin-right: 0.5rem;
+          }
+          .nav-resume {
+            display: none;
           }
         }
 

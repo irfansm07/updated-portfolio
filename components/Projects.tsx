@@ -22,7 +22,7 @@ const projects = [
   {
     id: 2,
     name: 'ZippRide',
-    tag: 'Mobile-First · PWA',
+    tag: 'Mobile-First · College Project',
     tagColor: '#f59e0b',
     url: '#',
     tech: ['React', 'Vite', 'Supabase', 'PWA'],
@@ -33,6 +33,22 @@ const projects = [
       'Real-time train arrival data sync for driver pickups',
       'One-touch SOS broadcasting & Safety Center',
       'Gender-specific matching algorithms',
+    ],
+  },
+  {
+    id: 3,
+    name: 'VibeXpert Shop',
+    tag: 'E-Commerce · Live Production',
+    tagColor: '#ec4899',
+    url: 'https://www.vibexpert.shop',
+    tech: ['Next.js', 'Stripe', 'Supabase', 'TailwindCSS'],
+    description:
+      'Campus merchandise e-commerce platform live at vibexpert.shop — featuring a full Stripe-powered checkout flow, real-time inventory, and a mobile-first shopping experience.',
+    highlights: [
+      'Stripe-powered secure checkout, live in production',
+      'Real-time inventory management & stock tracking',
+      'Order confirmation and notification system',
+      'Mobile-first responsive UI built with TailwindCSS',
     ],
   },
 ];
@@ -147,11 +163,17 @@ export function Projects() {
                 ))}
               </div>
 
-              {selectedProject.url !== '#' && (
+              {selectedProject.url !== '#' ? (
                 <div className="modal-action">
                   <a href={selectedProject.url} target="_blank" rel="noopener noreferrer" className="btn-primary modal-btn">
                     🚀 Visit Live Site
                   </a>
+                </div>
+              ) : (
+                <div className="modal-action">
+                  <div className="private-repo-banner">
+                    🔒 Private / College Submission — not publicly deployed
+                  </div>
                 </div>
               )}
             </div>
@@ -179,9 +201,10 @@ export function Projects() {
           justify-content: center;
           align-items: stretch;
           gap: 2rem;
-          max-width: 820px;
+          max-width: 1120px;
           margin: 2rem auto 4rem auto;
           width: 100%;
+          flex-wrap: wrap;
         }
 
         /* Premium Monogram Card */
@@ -455,6 +478,17 @@ export function Projects() {
 
         .modal-action {
           margin-top: 2.5rem;
+        }
+
+        .private-repo-banner {
+          background: rgba(99, 102, 241, 0.08);
+          border: 1px solid rgba(99, 102, 241, 0.2);
+          border-radius: 10px;
+          padding: 0.85rem 1.2rem;
+          color: #94a3b8;
+          font-size: 0.88rem;
+          font-family: var(--font-mono);
+          text-align: center;
         }
 
         .modal-btn {
