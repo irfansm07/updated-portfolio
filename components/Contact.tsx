@@ -1,16 +1,10 @@
 'use client';
-import { useEffect, useRef, useState, Suspense } from 'react';
-import dynamic from 'next/dynamic';
-
-// Load Lanyard client-side only — it needs WebGL/Canvas APIs
-const Lanyard = dynamic(() => import('./Lanyard'), { ssr: false });
+import { useEffect, useRef, useState } from 'react';
+import Lanyard from './Lanyard';
 
 export function Contact() {
   const ref = useRef<HTMLElement>(null);
-  const lanyardRef = useRef<HTMLDivElement>(null);
   const [copied, setCopied] = useState(false);
-  const [lanyardMounted, setLanyardMounted] = useState(false);
-  const [lanyardReady, setLanyardReady] = useState(false);
   
   // Form state
   const [name, setName] = useState('');
@@ -35,23 +29,6 @@ export function Contact() {
     );
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
-  }, []);
-
-  // Mount Lanyard only when it scrolls near the viewport — avoids blocking page load
-  useEffect(() => {
-    const el = lanyardRef.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setLanyardMounted(true);
-          io.disconnect();
-        }
-      },
-      { rootMargin: '200px' }   // start loading 200px before it enters view
-    );
-    io.observe(el);
-    return () => io.disconnect();
   }, []);
 
   const copyEmail = () => {
@@ -149,35 +126,8 @@ export function Contact() {
         Let&apos;s <span className="glow-text">Connect</span>
       </h2>
 
-      <div className="lanyard-hero" ref={lanyardRef}>
-        {/* Skeleton shown until Lanyard canvas is ready */}
-        {!lanyardReady && (
-          <div className="lanyard-skeleton">
-            <div className="lanyard-skeleton-band" />
-            <div className="lanyard-skeleton-card">
-              <div className="lanyard-skeleton-avatar" />
-              <div className="lanyard-skeleton-line w70" />
-              <div className="lanyard-skeleton-line w50" />
-              <div className="lanyard-skeleton-divider" />
-              <div className="lanyard-skeleton-line w80" />
-              <div className="lanyard-skeleton-line w60" />
-            </div>
-            <p className="lanyard-skeleton-hint">Loading card…</p>
-          </div>
-        )}
-        {lanyardMounted && (
-          <div style={{ opacity: lanyardReady ? 1 : 0, transition: 'opacity 0.5s ease', height: '100%' }}>
-            <Suspense fallback={null}>
-              <Lanyard
-                position={[0, 0, 8]}
-                gravity={[0, -40, 0]}
-                fov={28}
-                lanyardWidth={0.8}
-                onReady={() => setLanyardReady(true)}
-              />
-            </Suspense>
-          </div>
-        )}
+      <div className="lanyard-hero">
+        <Lanyard />
       </div>
 
       <div className="contact-grid">
@@ -364,86 +314,13 @@ export function Contact() {
         /* ── Lanyard hero (full-width above the grid) ── */
         .lanyard-hero {
           width: 100%;
-          height: 700px;
+          height: 560px;
           margin-bottom: 3rem;
           position: relative;
           overflow: visible;
-        }
-
-        /* ── Skeleton placeholder ── */
-        .lanyard-skeleton {
-          position: absolute;
-          inset: 0;
           display: flex;
-          flex-direction: column;
-          align-items: center;
+          align-items: flex-start;
           justify-content: center;
-          gap: 0;
-          pointer-events: none;
-        }
-
-        @keyframes shimmer {
-          0%   { background-position: -600px 0; }
-          100% { background-position:  600px 0; }
-        }
-
-        .lanyard-skeleton-band {
-          width: 12px;
-          height: 160px;
-          border-radius: 6px;
-          background: linear-gradient(90deg, #1e1e3a 25%, #2d2d5e 50%, #1e1e3a 75%);
-          background-size: 600px 100%;
-          animation: shimmer 1.6s infinite linear;
-          margin-bottom: -2px;
-        }
-
-        .lanyard-skeleton-card {
-          width: min(260px, 80vw);
-          background: rgba(35, 72, 200, 0.12);
-          border: 1px solid rgba(99, 102, 241, 0.2);
-          border-radius: 18px;
-          padding: 1.5rem;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 0.75rem;
-        }
-
-        .lanyard-skeleton-avatar {
-          width: 72px;
-          height: 72px;
-          border-radius: 50%;
-          background: linear-gradient(90deg, #1e1e3a 25%, #2d2d5e 50%, #1e1e3a 75%);
-          background-size: 600px 100%;
-          animation: shimmer 1.6s infinite linear;
-        }
-
-        .lanyard-skeleton-line {
-          height: 12px;
-          border-radius: 6px;
-          width: 100%;
-          background: linear-gradient(90deg, #1e1e3a 25%, #2d2d5e 50%, #1e1e3a 75%);
-          background-size: 600px 100%;
-          animation: shimmer 1.6s infinite linear;
-        }
-        .lanyard-skeleton-line.w70 { width: 70%; }
-        .lanyard-skeleton-line.w50 { width: 50%; }
-        .lanyard-skeleton-line.w80 { width: 80%; }
-        .lanyard-skeleton-line.w60 { width: 60%; }
-
-        .lanyard-skeleton-divider {
-          width: 100%;
-          height: 1px;
-          background: rgba(99,102,241,0.15);
-          margin: 0.25rem 0;
-        }
-
-        .lanyard-skeleton-hint {
-          margin-top: 1rem;
-          font-family: var(--font-mono);
-          font-size: 0.72rem;
-          color: rgba(255,255,255,0.25);
-          letter-spacing: 0.08em;
         }
 
         .contact-intro {
@@ -740,13 +617,13 @@ export function Contact() {
             gap: 3rem;
           }
           .lanyard-hero {
-            height: 580px;
+            height: 500px;
           }
         }
 
         @media (max-width: 768px) {
           .lanyard-hero {
-            height: 500px;
+            height: 460px;
           }
           .contact-form-card {
             padding: 1.75rem;
@@ -778,8 +655,7 @@ export function Contact() {
         @media (max-width: 576px) {
           .lanyard-hero {
             height: 420px;
-          }
-          .contact-form-card {
+          }          .contact-form-card {
             padding: 1.25rem;
           }
 

@@ -1,72 +1,350 @@
-.lanyard-wrapper {
-  position: relative;
-  z-index: 0;
+/* ── Scene container ─────────────────────────────────────────────────────── */
+.lyd-scene {
   width: 100%;
   height: 100%;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+  user-select: none;
 }
 
-.lanyard-wrapper canvas {
-  width: 100% !important;
-  height: 100% !important;
+/* ── Fixed string coming from top ───────────────────────────────────────── */
+.lyd-string-wrap {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.lyd-string {
+  width: 3px;
+  height: 80px;
+  background: linear-gradient(to bottom, #a5b4fc, #6366f1);
+  border-radius: 2px;
+}
+
+/* ── Pivot point (transform-origin top-center) ───────────────────────────── */
+.lyd-pivot {
+  display: flex;
+  justify-content: center;
+}
+
+.lyd-card-wrap {
+  transform-origin: top center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  will-change: transform;
+  touch-action: none;
+}
+
+/* ── Clip connector ──────────────────────────────────────────────────────── */
+.lyd-clip {
+  width: 18px;
+  height: 22px;
+  background: #9ca3af;
+  border-radius: 3px 3px 6px 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  margin-bottom: -1px;
+}
+
+/* ── Card shell ──────────────────────────────────────────────────────────── */
+.lyd-card {
+  width: 280px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(99,102,241,0.2);
+  background: #eef1f8;
+}
+
+/* ── Top blue section ────────────────────────────────────────────────────── */
+.lyd-card-top {
+  background: #2348c8;
+  padding: 20px 20px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.lyd-dots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  width: 80px;
+  margin-bottom: 4px;
+}
+
+.lyd-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
   display: block;
 }
 
-/* ── Long-press card preview modal ─────────────────────────────────────────── */
-.card-preview-overlay {
+.lyd-circle-deco {
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: rgba(100,130,255,0.3);
+}
+
+/* Avatar */
+.lyd-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #e03030;
+  border: 3px solid rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 8px auto 10px;
+  box-shadow: 0 0 0 4px rgba(255,255,255,0.08);
+}
+
+.lyd-avatar span {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.5px;
+  font-family: Arial, sans-serif;
+}
+
+/* Name */
+.lyd-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+  margin: 0 0 10px;
+  font-family: Arial, sans-serif;
+}
+
+/* Badge */
+.lyd-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 20px;
+  padding: 5px 14px;
+  margin: 0 auto 12px;
+  width: fit-content;
+}
+
+.lyd-badge-icon {
+  font-family: monospace;
+  font-size: 0.75rem;
+  color: #a5c4ff;
+  font-weight: 700;
+}
+
+.lyd-badge-text {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 1.5px;
+  font-family: Arial, sans-serif;
+}
+
+/* Info box */
+.lyd-info-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin-bottom: 0;
+}
+
+.lyd-info-icon {
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.lyd-info-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.72rem;
+  color: #d0dcff;
+  font-family: Arial, sans-serif;
+  line-height: 1.4;
+}
+
+.lyd-info-text b {
+  color: #93c5fd;
+}
+
+/* ── Wave SVG divider ────────────────────────────────────────────────────── */
+.lyd-wave {
+  display: block;
+  background: #2348c8;
+  line-height: 0;
+}
+
+.lyd-wave svg {
+  width: 100%;
+  height: 30px;
+  display: block;
+}
+
+/* ── Bottom white section ────────────────────────────────────────────────── */
+.lyd-card-bottom {
+  background: #eef1f8;
+  padding: 14px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.lyd-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.lyd-row-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: rgba(35,72,200,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: monospace;
+  font-weight: 700;
+  font-size: 0.75rem;
+  color: #2348c8;
+  flex-shrink: 0;
+}
+
+.lyd-row-icon--email {
+  font-size: 1rem;
+  font-family: Arial, sans-serif;
+}
+
+.lyd-row-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #2348c8;
+  letter-spacing: 1.5px;
+  font-family: Arial, sans-serif;
+  margin-bottom: 2px;
+}
+
+.lyd-row-value {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #111827;
+  font-family: Arial, sans-serif;
+}
+
+.lyd-divider {
+  height: 1px;
+  background: rgba(35,72,200,0.12);
+  margin: 0 0;
+}
+
+/* Quote */
+.lyd-quote {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 0 2px;
+}
+
+.lyd-quote-mark {
+  font-size: 1.8rem;
+  color: #2348c8;
+  line-height: 1;
+  font-family: Georgia, serif;
+  flex-shrink: 0;
+}
+
+.lyd-quote-bar {
+  width: 3px;
+  border-radius: 2px;
+  background: #2348c8;
+  align-self: stretch;
+  flex-shrink: 0;
+}
+
+.lyd-quote div {
+  font-size: 0.72rem;
+  color: #374151;
+  line-height: 1.5;
+  font-family: Arial, sans-serif;
+}
+
+/* ── Long-press preview overlay ──────────────────────────────────────────── */
+.lyd-preview-overlay {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(0,0,0,0.85);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 1.5rem;
-  animation: cpFadeIn 0.25s ease forwards;
+  animation: lyd-fade-in 0.2s ease forwards;
 }
 
-@keyframes cpFadeIn {
+@keyframes lyd-fade-in {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
 
-.card-preview-inner {
+.lyd-preview-inner {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-  animation: cpSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: lyd-slide-up 0.28s cubic-bezier(0.16,1,0.3,1) forwards;
 }
 
-@keyframes cpSlideUp {
-  from { transform: scale(0.88) translateY(24px); opacity: 0; }
+@keyframes lyd-slide-up {
+  from { transform: scale(0.88) translateY(20px); opacity: 0; }
   to   { transform: scale(1)    translateY(0);    opacity: 1; }
 }
 
-.card-preview-img {
-  width: min(380px, 90vw);
-  height: auto;
-  border-radius: 24px;
-  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(99,102,241,0.25);
-  display: block;
+.lyd-preview-card {
+  width: min(340px, 90vw);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.6);
+  background: #eef1f8;
 }
 
-.card-preview-close {
+.lyd-preview-card .lyd-card-top  { padding: 24px 24px 0; }
+.lyd-preview-card .lyd-avatar    { width: 84px; height: 84px; }
+.lyd-preview-card .lyd-avatar span { font-size: 1.6rem; }
+.lyd-preview-card .lyd-name      { font-size: 1.15rem; }
+.lyd-preview-card .lyd-card-bottom { padding: 16px 20px 20px; }
+.lyd-preview-card .lyd-row-value { font-size: 0.88rem; }
+
+.lyd-preview-close {
   position: absolute;
-  top: -14px;
-  right: -14px;
-  width: 36px;
-  height: 36px;
+  top: -12px;
+  right: -12px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
   color: #fff;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -75,21 +353,15 @@
   z-index: 10;
 }
 
-.card-preview-close:hover {
-  background: rgba(239, 68, 68, 0.3);
+.lyd-preview-close:hover {
+  background: rgba(239,68,68,0.3);
   transform: rotate(90deg);
 }
 
-.card-preview-hint {
+.lyd-preview-hint {
   font-family: monospace;
-  font-size: 0.72rem;
-  color: rgba(255, 255, 255, 0.35);
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.3);
   letter-spacing: 0.05em;
   margin: 0;
-}
-
-@media (max-width: 480px) {
-  .card-preview-img {
-    width: 92vw;
-  }
 }
